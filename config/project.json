@@ -2,7 +2,7 @@
   "name": "Budol Bantay",
   "slug": "budol-bantay",
   "siteOrigin": "https://abalol.xyz",
-  "githubUrl": "",
+  "githubUrl": "https://github.com/tomohiro-owada/budol-bantay",
   "prod": {
     "turnstileSiteKey": "CHANGE-ME",
     "apiUrl": "https://api.abalol.xyz"
