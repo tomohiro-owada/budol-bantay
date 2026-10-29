@@ -261,7 +261,7 @@ function bandFor(score) {
   return score >= lv.hi ? "hi" : score >= lv.mid ? "mid" : score >= lv.lo ? "lo" : "none";
 }
 const COL = { hi: "#c62828", mid: "#ef6c00", lo: "#b26a00", none: "#2e7d32" };
-// The CSP has no style-src 'unsafe-inline', so inline style="" attributes are
+// The CSP has no style-src 'unsafe-inline', so inline style attributes are
 // blocked. Dynamic colours/widths are carried in data-* attributes and applied
 // through the CSSOM, which the CSP allows.
 function paintDyn() {
