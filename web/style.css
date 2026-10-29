@@ -68,3 +68,8 @@ table{border-collapse:collapse;font-size:.75rem;width:100%}
 td,th{border:1px solid #ddd;padding:3px}
 
 .nojs{padding:12px}
+.card details.more{margin:0;border-radius:0;border-top:1px solid #eef0f3;padding:8px 16px;background:#fafbfc}
+.card details.more summary{font-size:.9rem}
+.card details.more .sec2{padding:10px 0;border-top:1px solid #eef0f3}
+.sec2.safe h3{color:#2e7d32}
+.has-result .landdisc,.has-result #reportline{display:none}

@@ -4,6 +4,7 @@
 // merged result is rendered. See privacy.html for the privacy model.
 import { analyze, messages } from "./engine.js";
 import { mask } from "./mask.js";
+import { guidance, REPORT_COMPACT } from "./view.js";
 
 // ---- build-time config (placeholders replaced by `go run ./cmd/build`) ----
 const API_URL = "{{API_URL}}";
@@ -53,6 +54,7 @@ tl: {
   aiTitle: "AI analysis",
   aiBy: "mula sa AI provider",
   finalResult: "Pinagsamang resulta (rules + AI)",
+  aiExplain: "Paliwanag ng AI", details: "Mga detalye: senyales at ipinadala sa AI", guideTitle: "Gabay",
   rulesResult: "Resulta ng rules (sa phone mo)",
   extraRules: "Mga senyales mula sa rules",
   extraAI: "Mga dagdag na senyales mula sa AI",
@@ -121,6 +123,7 @@ en: {
   aiTitle: "AI analysis",
   aiBy: "from the AI provider",
   finalResult: "Combined result (rules + AI)",
+  aiExplain: "AI explanation", details: "Details: signals and what was sent to AI", guideTitle: "Guidance",
   rulesResult: "Rules result (on your phone)",
   extraRules: "Signals from the rules",
   extraAI: "Extra signals from AI",
@@ -189,6 +192,7 @@ ja: {
   aiTitle: "AI analysis",
   aiBy: "AIプロバイダーより",
   finalResult: "統合結果(ルール+AI)",
+  aiExplain: "AIによる説明", details: "詳細:検出された兆候とAIへ送った内容", guideTitle: "ガイド",
   rulesResult: "ルールの結果(端末内)",
   extraRules: "ルールが検出した兆候",
   extraAI: "AIが追加で検出した兆候",
@@ -318,6 +322,11 @@ function reportHTML() {
   return body[LANG] || body.en;
 }
 
+function reportCompactHTML() {
+  const acg = `<a href="https://acg.pnp.gov.ph/" target="_blank" rel="noopener noreferrer">acg.pnp.gov.ph</a>`;
+  return (REPORT_COMPACT[LANG] || REPORT_COMPACT.en).replace("{acg}", acg);
+}
+
 /* ===================== examples (fictional) ===================== */
 const EX = [
   { s: "GCash", m: "GCash: Ang iyong account ay pansamantalang na-lock dahil sa kahina-hinalang aktibidad. I-verify ang account within 24 hours para hindi ma-deactivate: https://gcash-ph-verify.top/login" },
@@ -361,18 +370,22 @@ function flagLine(h, src) {
 }
 function renderRules(r, keepAI) {
   LAST = r;
-  const adv = adviceFor(r.cats);
+  const g = guidance({ band: bandFor(r.score), lang: LANG, aiActions: null, rulesAdvice: adviceFor(r.cats) });
   $("#result").innerHTML = `<div class="card" id="rulescard"><div class="verdict" data-bg="${COL[r.level]}"><h2>${esc(tr(r.level))}</h2><p>${esc(tr(r.level + "Sub"))}</p>
   <div class="meter" title="${esc(tr("score"))} ${r.score}/100"><i data-w="${Math.max(3, r.score)}"></i></div><p>${esc(tr("score"))}: ${r.score}/100 · ${esc(tr("rulesResult"))}</p></div>
   ${r.hits.length ? `<div class="sec2"><h3>${esc(tr("why"))}</h3><ul>${r.hits.map((h) => flagLine(h, null)).join("")}</ul></div>` : ""}
-  <div class="sec2"><h3>${esc(tr("todo"))}</h3><ul>${adv.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></div>
+  ${guidanceHTML(g)}
   <div class="sec2"><button class="btn" id="dl">${esc(tr("share"))}</button></div>
   <div class="resultdisc" role="note">${esc(tr("resultDisc"))}</div>
-  <div class="reportline">${reportHTML()}</div>
+  <div class="reportline">${g.safe ? reportCompactHTML() : reportHTML()}</div>
   <div class="disc">${esc(tr("disc"))}</div></div>`;
   $("#dl").onclick = () => shareImg();
   paintDyn();
   if (!keepAI) { $("#airesult").innerHTML = ""; LAST_AI = null; }
+}
+function guidanceHTML(g) {
+  const head = g.safe ? g.head : tr("todo");
+  return `<div class="sec2${g.safe ? " safe" : ""}"><h3>${esc(head)}</h3><ul>${g.items.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></div>`;
 }
 
 /* ===================== AI flow ===================== */
@@ -482,22 +495,37 @@ function renderAIDone(payload, keep) {
   }).join("");
   const aiFlags = (ai.red_flags || []).map((f) => `<li>${esc(f[L] || f.en)}<span class="src ai">AI</span></li>`).join("");
   const aiActs = (ai.actions || []).map((a) => `<li>${esc(a[L] || a.en)}</li>`).join("");
+  // ONE merged card: verdict + AI explanation + guidance + disclaimer + report
+  // line stay visible; rule hits, AI signals and the masked text sent go in a
+  // collapsible <details>. The instant rules card is dropped so nothing repeats.
+  const g = guidance({
+    band, lang: L,
+    aiActions: (ai.actions || []).map((a) => a[L] || a.en),
+    rulesAdvice: adviceFor((LAST && LAST.cats) || []),
+  });
+  $("#result").innerHTML = "";
   $("#airesult").innerHTML = `<div class="card" id="ai-section" data-ai-status="ok">
-  <div class="verdict" data-bg="${COL[band]}"><h2>${esc(tr("aiTitle"))} · ${esc(tr(band))}</h2>
-  <p>${esc(tr("finalResult"))}: ${final}/100 · ${esc(ai.verdict)} (${esc(stName)}, risk ${ai.risk}) · ${esc(tr("aiBy"))} ${esc(AI_DISPLAY_NAME)}</p>
-  <div class="meter" title="${esc(tr("score"))} ${final}/100"><i data-w="${Math.max(3, final)}"></i></div></div>
-  <div class="sec2"><h3>${esc(tr("sentTitle"))}</h3>
-  <pre class="sent">${esc(masked)}</pre>
-  <p class="counts">${esc(tr("maskedLabel"))}: ${esc(countsLine(counts))} · ${esc(tr("sentHint"))}</p></div>
+  <div class="verdict" data-bg="${COL[band]}"><h2>${esc(tr(band))}</h2><p>${esc(tr(band + "Sub"))}</p>
+  <div class="meter" title="${esc(tr("score"))} ${final}/100"><i data-w="${Math.max(3, final)}"></i></div>
+  <p>${esc(tr("finalResult"))}: ${final}/100 · ${esc(ai.verdict)} (${esc(stName)}, risk ${ai.risk}) · ${esc(tr("aiBy"))} ${esc(AI_DISPLAY_NAME)}</p></div>
+  <div class="sec2"><h3>${esc(tr("aiExplain"))}</h3>
+  <p>${esc(ai.explanation[L] || ai.explanation.en)}</p>
+  ${ai.injection_detected ? `<div class="note warn"><p>${esc(tr("injection"))}</p></div>` : ""}</div>
+  ${guidanceHTML(g)}
+  <div class="sec2"><button class="btn" id="dl">${esc(tr("share"))}</button></div>
+  <div class="resultdisc" role="note">${esc((resp.disclaimer && resp.disclaimer[L]) || tr("resultDisc"))}</div>
+  <div class="reportline">${g.safe ? reportCompactHTML() : reportHTML()}</div>
+  <details class="more"><summary>${esc(tr("details"))}</summary>
   <div class="sec2"><h3>${esc(tr("extraRules"))}</h3>
   ${serverFlags ? `<ul>${serverFlags}</ul>` : `<p class="ev">—</p>`}</div>
   <div class="sec2"><h3>${esc(tr("extraAI"))}</h3>
-  <p>${esc(ai.explanation[L] || ai.explanation.en)}</p>
-  ${aiFlags ? `<ul>${aiFlags}</ul>` : ""}
-  ${ai.injection_detected ? `<div class="note warn"><p>${esc(tr("injection"))}</p></div>` : ""}</div>
-  <div class="sec2"><h3>${esc(tr("aiActions"))}</h3><ul>${aiActs}</ul></div>
-  <div class="resultdisc" role="note">${esc((resp.disclaimer && resp.disclaimer[L]) || tr("resultDisc"))}</div>
+  ${aiFlags ? `<ul>${aiFlags}</ul>` : `<p class="ev">—</p>`}</div>
+  <div class="sec2"><h3>${esc(tr("sentTitle"))}</h3>
+  <pre class="sent">${esc(masked)}</pre>
+  <p class="counts">${esc(tr("maskedLabel"))}: ${esc(countsLine(counts))} · ${esc(tr("sentHint"))}</p></div></details>
+  <div class="disc">${esc(tr("disc"))}</div>
   </div>`;
+  $("#dl").onclick = () => shareImg();
   paintDyn();
 }
 
@@ -623,6 +651,11 @@ function wrap(ctx, text, x, y, maxW, lh) {
 
 /* ===================== boot ===================== */
 async function boot() {
+  // While a result card is on screen it carries its own disclaimer + report
+  // line, so hide the landing-page copies instead of showing both.
+  const sync = () => document.body.classList.toggle("has-result", !!document.querySelector("#result .card, #airesult .card"));
+  const mo = new MutationObserver(sync);
+  for (const id of ["#result", "#airesult"]) mo.observe($(id), { childList: true });
   $("#go").onclick = run;
   $("#clr").onclick = () => { $("#msg").value = ""; $("#sender").value = ""; $("#result").innerHTML = ""; $("#airesult").innerHTML = ""; LAST = null; LAST_AI = null; };
   document.querySelectorAll(".lang button").forEach((b) => (b.onclick = () => {
