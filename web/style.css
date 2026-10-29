@@ -66,3 +66,5 @@ footer{font-size:.75rem;color:var(--mute);margin-top:20px}
 footer a{color:var(--acc)}
 table{border-collapse:collapse;font-size:.75rem;width:100%}
 td,th{border:1px solid #ddd;padding:3px}
+
+.nojs{padding:12px}

@@ -74,8 +74,17 @@ type AIConf struct {
 	PrivacyNote      map[string]string `json:"privacy_note"`
 }
 
+// Preview overrides (flags). When apiOverride is set, deploy/ files are not
+// rendered, so a preview build can never overwrite the real deploy examples.
+var (
+	apiOverride string
+	outBase     string
+)
+
 func main() {
 	envName := flag.String("env", "dev", "env: dev|prod")
+	flag.StringVar(&apiOverride, "api-url", "", "preview only: override the API URL baked into the page (skips rendering deploy/ files)")
+	flag.StringVar(&outBase, "out", "dist", "output base directory (the page is written to <out>/<slug>/)")
 	flag.Parse()
 	if *envName != "dev" && *envName != "prod" {
 		fmt.Fprintf(os.Stderr, "unknown -env %q (want dev|prod)\n", *envName)
@@ -119,6 +128,9 @@ func run(envName string) error {
 	if apiURL == "" {
 		apiURL = "http://localhost:18790"
 	}
+	if apiOverride != "" {
+		apiURL = apiOverride
+	}
 	if allowedOrigins == "" {
 		allowedOrigins = siteOrigin
 	}
@@ -145,7 +157,7 @@ func run(envName string) error {
 		fmt.Fprintln(os.Stderr, "build: note: config/project.json \"githubUrl\" is empty; terms.html names the project's GitHub page without a link (TODO)")
 	}
 
-	outDir := filepath.Join("dist", p.Slug)
+	outDir := filepath.Join(outBase, p.Slug)
 	if err := os.MkdirAll(outDir, 0o755); err != nil {
 		return err
 	}
@@ -225,10 +237,14 @@ func run(envName string) error {
 
 	// 3. (worker retired: no wrangler render; the API lives on the server.)
 
-	fmt.Printf("done: dist/%s/ (env=%s site=%s api=%s turnstile=%v)\n", p.Slug, envName, siteURL, apiURL, turnstileOn)
+	fmt.Printf("done: %s/ (env=%s site=%s api=%s turnstile=%v)\n", outDir, envName, siteURL, apiURL, turnstileOn)
 
 	// 4. Render deploy/budol-api.env.example + deploy/budol-api.json
 	// (non-secret settings only; secrets are set on the server, never here).
+	if apiOverride != "" {
+		fmt.Println("preview build: deploy/ files not rendered")
+		return nil
+	}
 	if err := renderAPIEnv(p, envName, apiURL, allowedOrigins); err != nil {
 		return err
 	}

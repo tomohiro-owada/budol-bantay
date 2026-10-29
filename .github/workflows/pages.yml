@@ -1,0 +1,50 @@
+name: pages
+
+# MANUAL ONLY. Nothing runs on push, and GitHub Pages is not enabled for this
+# repository. To go live: enable Pages (Settings -> Pages -> Source: GitHub Actions),
+# confirm config/project.json prod.apiUrl, then run this workflow by hand.
+# A project page under a user/org site that has a custom domain is served at
+# <custom-domain>/<repo-name>/ (here: /budol-bantay/); `go run ./cmd/build`
+# writes the page to dist/<slug>/, which is what gets published.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Test
+        run: |
+          go vet ./...
+          go test ./...
+          node --test web/test/*.test.mjs
+      - uses: actions/configure-pages@v5
+      - name: Build static site (prod)
+        run: go run ./cmd/build -env prod
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/budol-bantay
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

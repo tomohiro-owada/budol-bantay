@@ -634,7 +634,11 @@ func (s *Server) callBudgeted(ctx context.Context, style, system, user, model, s
 	res, perr := CallLLMWithStyle(ctx, s.httpClient, s.cfg, style, system, user, model, session)
 	switch {
 	case perr == nil:
-		s.budget.Settle(est, EstimateNeurons(model, res.InTokens, res.OutTokens))
+		actual := EstimateNeurons(model, res.InTokens, res.OutTokens)
+		if res.Neurons > 0 {
+			actual = res.Neurons // measured: usage.neurons reported by Workers AI
+		}
+		s.budget.Settle(est, actual)
 	case perr.QuotaExhausted:
 		s.budget.Settle(est, 0)
 		s.budget.Exhaust()

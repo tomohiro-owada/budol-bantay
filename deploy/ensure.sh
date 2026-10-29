@@ -2,20 +2,22 @@
 # Keep budol-api running as the current (unprivileged) user. Safe to run every 5 minutes
 # from cron and at @reboot.
 #
-#   - kill switch: if ~/budol/DISABLED exists, stop the service and exit
-#   - sources secrets from ~/.config/budol/ai.env (mode 600) and
-#     ~/budol/budol-api.env (live copy of deploy/budol-api.env.example
+#   - kill switch: if $APP_DIR/DISABLED exists, stop the service and exit
+#   - sources secrets from ~/.config/budol/ai.env (mode 600, optional) and
+#     $APP_DIR/budol-api.env and/or $APP_DIR/env (live copy of deploy/budol-api.env.example
 #     plus TURNSTILE_SECRET / BUDOL_STATS_TOKEN / BUDOL_IP_SALT)
-#   - logs to ~/budol/logs/budol-api.log, rotated by size
+#   - logs to $APP_DIR/logs/budol-api.log, rotated by size
 set -u
 
-APP_DIR="$HOME/budol"
+# APP_DIR: where bin/, state/, logs/ and the env file live. Defaults to the
+# directory this script was copied to; override with BUDOL_HOME.
+APP_DIR="${BUDOL_HOME:-$(cd "$(dirname "$0")" && pwd)}"
 BIN="$APP_DIR/bin/budol-api"
 LOG_DIR="$APP_DIR/logs"
 STATE_DIR="$APP_DIR/state"
 DISABLED="$APP_DIR/DISABLED"
 LOG_FILE="$LOG_DIR/budol-api.log"
-PATTERN="budol/bin/budol-api"
+PATTERN="$APP_DIR/bin/budol-api"
 
 # Kill switch: stop the service and stay stopped.
 if [ -f "$DISABLED" ]; then
@@ -49,6 +51,8 @@ set -a
 [ -f "$HOME/.config/budol/ai.env" ] && . "$HOME/.config/budol/ai.env"
 # shellcheck disable=SC1090,SC1091
 [ -f "$APP_DIR/budol-api.env" ] && . "$APP_DIR/budol-api.env"
+# shellcheck disable=SC1090,SC1091
+[ -f "$APP_DIR/env" ] && . "$APP_DIR/env"
 set +a
 export BUDOL_STATE_DIR="$STATE_DIR"
 export BUDOL_ENV="${BUDOL_ENV:-prod}"

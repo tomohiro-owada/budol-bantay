@@ -261,6 +261,13 @@ function bandFor(score) {
   return score >= lv.hi ? "hi" : score >= lv.mid ? "mid" : score >= lv.lo ? "lo" : "none";
 }
 const COL = { hi: "#c62828", mid: "#ef6c00", lo: "#b26a00", none: "#2e7d32" };
+// The CSP has no style-src 'unsafe-inline', so inline style="" attributes are
+// blocked. Dynamic colours/widths are carried in data-* attributes and applied
+// through the CSSOM, which the CSP allows.
+function paintDyn() {
+  document.querySelectorAll("[data-bg]").forEach((e) => { e.style.background = e.dataset.bg; });
+  document.querySelectorAll("[data-w]").forEach((e) => { e.style.width = e.dataset.w + "%"; });
+}
 function isLocalhost() {
   return ["localhost", "127.0.0.1", "[::1]"].includes(location.hostname);
 }
@@ -355,8 +362,8 @@ function flagLine(h, src) {
 function renderRules(r, keepAI) {
   LAST = r;
   const adv = adviceFor(r.cats);
-  $("#result").innerHTML = `<div class="card" id="rulescard"><div class="verdict" style="background:${COL[r.level]}"><h2>${esc(tr(r.level))}</h2><p>${esc(tr(r.level + "Sub"))}</p>
-  <div class="meter" title="${esc(tr("score"))} ${r.score}/100"><i style="width:${Math.max(3, r.score)}%"></i></div><p>${esc(tr("score"))}: ${r.score}/100 · ${esc(tr("rulesResult"))}</p></div>
+  $("#result").innerHTML = `<div class="card" id="rulescard"><div class="verdict" data-bg="${COL[r.level]}"><h2>${esc(tr(r.level))}</h2><p>${esc(tr(r.level + "Sub"))}</p>
+  <div class="meter" title="${esc(tr("score"))} ${r.score}/100"><i data-w="${Math.max(3, r.score)}"></i></div><p>${esc(tr("score"))}: ${r.score}/100 · ${esc(tr("rulesResult"))}</p></div>
   ${r.hits.length ? `<div class="sec2"><h3>${esc(tr("why"))}</h3><ul>${r.hits.map((h) => flagLine(h, null)).join("")}</ul></div>` : ""}
   <div class="sec2"><h3>${esc(tr("todo"))}</h3><ul>${adv.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></div>
   <div class="sec2"><button class="btn" id="dl">${esc(tr("share"))}</button></div>
@@ -364,6 +371,7 @@ function renderRules(r, keepAI) {
   <div class="reportline">${reportHTML()}</div>
   <div class="disc">${esc(tr("disc"))}</div></div>`;
   $("#dl").onclick = () => shareImg();
+  paintDyn();
   if (!keepAI) { $("#airesult").innerHTML = ""; LAST_AI = null; }
 }
 
@@ -475,9 +483,9 @@ function renderAIDone(payload, keep) {
   const aiFlags = (ai.red_flags || []).map((f) => `<li>${esc(f[L] || f.en)}<span class="src ai">AI</span></li>`).join("");
   const aiActs = (ai.actions || []).map((a) => `<li>${esc(a[L] || a.en)}</li>`).join("");
   $("#airesult").innerHTML = `<div class="card" id="ai-section" data-ai-status="ok">
-  <div class="verdict" style="background:${COL[band]}"><h2>${esc(tr("aiTitle"))} · ${esc(tr(band))}</h2>
+  <div class="verdict" data-bg="${COL[band]}"><h2>${esc(tr("aiTitle"))} · ${esc(tr(band))}</h2>
   <p>${esc(tr("finalResult"))}: ${final}/100 · ${esc(ai.verdict)} (${esc(stName)}, risk ${ai.risk}) · ${esc(tr("aiBy"))} ${esc(AI_DISPLAY_NAME)}</p>
-  <div class="meter" title="${esc(tr("score"))} ${final}/100"><i style="width:${Math.max(3, final)}%"></i></div></div>
+  <div class="meter" title="${esc(tr("score"))} ${final}/100"><i data-w="${Math.max(3, final)}"></i></div></div>
   <div class="sec2"><h3>${esc(tr("sentTitle"))}</h3>
   <pre class="sent">${esc(masked)}</pre>
   <p class="counts">${esc(tr("maskedLabel"))}: ${esc(countsLine(counts))} · ${esc(tr("sentHint"))}</p></div>
@@ -490,6 +498,7 @@ function renderAIDone(payload, keep) {
   <div class="sec2"><h3>${esc(tr("aiActions"))}</h3><ul>${aiActs}</ul></div>
   <div class="resultdisc" role="note">${esc((resp.disclaimer && resp.disclaimer[L]) || tr("resultDisc"))}</div>
   </div>`;
+  paintDyn();
 }
 
 async function runAI(local, text, sender) {
