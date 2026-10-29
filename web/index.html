@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="tl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+{{CSP_COMMENT}}
+<meta http-equiv="Content-Security-Policy" content="{{CSP}}">
+<title>{{NAME}} — scam-message checker</title>
+<link rel="canonical" href="{{SITE_URL}}">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<header>
+<h1>🛡️ {{NAME}}</h1>
+<div class="lang" role="group" aria-label="Language">
+<button data-l="tl" aria-pressed="true">Taglish</button><button data-l="en">EN</button><button data-l="ja">日本語</button>
+</div>
+</header>
+<p class="tag" data-i="tagline"></p>
+
+<div class="controls">
+<label class="switch"><input type="checkbox" id="aitoggle" checked> <span data-i="aiToggle"></span></label>
+</div>
+
+<label class="lab" for="msg" data-i="pasteLabel"></label>
+<textarea id="msg" autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
+<label class="lab" for="sender" data-i="senderLabel"></label>
+<input id="sender" autocomplete="off" placeholder="e.g. GCash / 0917… / +63…">
+<div class="row"><button class="btn" id="go" data-i="check"></button><button class="btn sec" id="clr" data-i="clear"></button></div>
+<div class="privacy" id="privacyshort"></div>
+<p class="landdisc" data-i="landDisc"></p>
+<p class="reportline" id="reportline"></p>
+<div id="result" aria-live="polite"></div>
+<div id="airesult" aria-live="polite"></div>
+
+<div id="notice" class="modal" hidden>
+<div class="box" role="dialog" aria-modal="true" aria-labelledby="noticeTitle">
+<h2 id="noticeTitle" data-i="noticeTitle"></h2>
+<div class="langs" id="noticeBody"></div>
+<div class="row"><button class="btn" id="noticeYes" data-i="noticeYes"></button><button class="btn sec" id="noticeNo" data-i="noticeNo"></button></div>
+</div>
+</div>
+
+<div id="tslot" aria-hidden="true"></div>
+
+<details id="exbox"><summary data-i="examples"></summary><p class="ev" data-i="exNote"></p><div id="exlist"></div></details>
+<footer><span data-i="footer"></span> <a href="privacy.html" data-i="privacyLink"></a> · <a href="terms.html" data-i="termsLink"></a></footer>
+</main>
+<noscript><p style="padding:12px">Kailangan ng JavaScript. / JavaScript is required. / JavaScriptが必要です。</p></noscript>
+<script type="module" src="app.js"></script>
+</body>
+</html>

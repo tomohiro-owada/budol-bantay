@@ -1,0 +1,19 @@
+# Example cloudflared config (named-tunnel alternative to nginx).
+# Install on the server as the service user:
+#   cloudflared tunnel create budol-api
+#   # put the tunnel ID below, copy credentials to ~/.cloudflared/
+#   cloudflared tunnel route dns budol-api api.example.com
+#   cloudflared tunnel --config cloudflared-config.yml run budol-api
+#
+# When running behind this tunnel, set TRUST_CF_HEADERS=1 in
+# ~/budol/budol-api.env so budol-api honours CF-Connecting-IP.
+# (With nginx on the same host, leave it empty and use TRUSTED_PROXY
+# instead — pick ONE ingress path.)
+
+tunnel: CHANGE-ME-TUNNEL-ID
+credentials-file: /home/<user>/.cloudflared/CHANGE-ME-TUNNEL-ID.json
+
+ingress:
+  - hostname: api.example.com
+    service: http://127.0.0.1:8790
+  - service: http_status:404

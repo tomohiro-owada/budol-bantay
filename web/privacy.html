@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="tl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+{{CSP_COMMENT}}
+<meta http-equiv="Content-Security-Policy" content="{{CSP}}">
+<title>{{NAME}} — Privacy</title>
+<link rel="canonical" href="{{SITE_URL}}privacy.html">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<header><h1>🛡️ {{NAME}} — Privacy</h1></header>
+<p><a href="./">← {{NAME}}</a> · <a href="terms.html">Terms</a></p>
+
+<h2>Taglish</h2>
+<ul>
+<li>Ang <strong>rules check ay sa phone mo lang ginagawa</strong>. Hindi ito umaalis sa device mo.</li>
+<li>Kapag <strong>ON ang AI</strong>, isang <strong>masked na kopya</strong> ng mensahe ang ipinapadala sa aming server ({{API_ORIGIN}} API). Pinapalitan muna sa phone mo ang mga phone number, email, card/account number, OTP code, pangalan at address ng mga token tulad ng [PHONE] bago ipadala.</li>
+<li>Ipinapasa ng aming server ang masked na text sa <strong>AI provider ({{AI_DISPLAY_NAME}})</strong> para sa paliwanag. {{AI_PRIVACY_TL}}</li>
+<li><strong>Hindi kami nag-iimbak o nagla-log ng text</strong> — maski masked. Anonymous daily counters lang (hal. ilang check kada araw) ang binibilang.</li>
+<li><strong>Maaari mong i-OFF ang AI</strong> gamit ang switch sa pangunahing pahina. Rules-only ang resulta kapag naka-OFF.</li>
+<li>Takpan ang iba pang personal na detalye bago mag-paste.</li>
+<li><strong>Hindi kami konektado</strong> sa gobyerno (CICC, NTC, BSP, DICT, PNP, SEC), sa GCash, Maya, o sa anumang bangko, courier o kumpanya. Gabay lang ito, hindi legal o financial advice.</li>
+</ul>
+
+<h2>English</h2>
+<ul>
+<li>The <strong>rules check happens on your phone</strong>. It never leaves your device.</li>
+<li>When <strong>AI is ON</strong>, a <strong>masked copy</strong> of the message is sent to our server ({{API_ORIGIN}} API). Phone numbers, emails, card/account numbers, OTP codes, names and addresses are replaced on your phone with tokens like [PHONE] before anything is sent.</li>
+<li>Our server forwards the masked text to the <strong>AI provider ({{AI_DISPLAY_NAME}})</strong> for the explanation. {{AI_PRIVACY_EN}}</li>
+<li><strong>We do not store or log the text</strong> — not even the masked copy. We only count anonymous daily counters (e.g. how many checks per day).</li>
+<li><strong>You can turn AI off</strong> with the switch on the main page. The result is rules-only when it is off.</li>
+<li>Blank out any other personal details before pasting.</li>
+<li><strong>Not affiliated</strong> with the government (CICC, NTC, BSP, DICT, PNP, SEC), GCash, Maya, or any bank, courier or company. Guidance only, not legal or financial advice.</li>
+</ul>
+
+<h2>日本語</h2>
+<ul>
+<li><strong>ルールチェックはあなたの端末内だけで行われます</strong>。外部に送信されません。</li>
+<li><strong>AIがONの場合</strong>、メッセージの<strong>マスク済みコピー</strong>が私たちのサーバー({{API_ORIGIN}} API)に送信されます。電話番号・メール・カード/口座番号・OTP・氏名・住所は、送信前に端末内で[PHONE]等のトークンに置換されます。</li>
+<li>サーバーはマスク済みテキストを<strong>AIプロバイダー({{AI_DISPLAY_NAME}})</strong>に転送して解説を受けます。{{AI_PRIVACY_JA}}</li>
+<li><strong>テキストは保存も記録もしません</strong>(マスク済みも含む)。匿名の日次カウンタ(1日のチェック件数等)のみ集計します。</li>
+<li><strong>AIはOFFにできます</strong>(トップページのスイッチ)。OFFの場合はルールのみの結果になります。</li>
+<li>その他の個人情報は貼り付け前に伏せてください。</li>
+<li><strong>政府(CICC・NTC・BSP・DICT・PNP・SEC)、GCash、Maya、銀行・配送業者・各企業とは無関係</strong>です。参考情報であり、法的・金融アドバイスではありません。</li>
+</ul>
+
+<footer>Non-profit project — {{SITE_URL}}</footer>
+</main>
+</body>
+</html>

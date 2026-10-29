@@ -1,0 +1,51 @@
+{
+  "name": "Budol Bantay",
+  "slug": "budol-bantay",
+  "siteOrigin": "https://abalol.xyz",
+  "githubUrl": "",
+  "prod": {
+    "turnstileSiteKey": "CHANGE-ME",
+    "apiUrl": "https://api.abalol.xyz"
+  },
+  "dev": {
+    "turnstileSiteKey": "1x00000000000000000000BB",
+    "siteOrigin": "http://localhost:8788",
+    "apiUrl": "http://localhost:18790"
+  },
+  "api": {
+    "listen": "127.0.0.1:8790",
+    "allowedOriginsProd": "https://abalol.xyz",
+    "allowedOriginsDev": "http://localhost:8788",
+    "trustedProxy": "127.0.0.1",
+    "maxTextChars": 1500,
+    "ratePerMin": 6,
+    "rateBurst": 3,
+    "aiRatePerHour": 20,
+    "aiMaxConcurrent": 3,
+    "aiDailyCap": 150,
+    "aiDailyNeurons": 8000,
+    "capTz": "Asia/Manila",
+    "aiTimeoutS": 25
+  },
+  "ai": {
+    "provider": "cloudflare-workers-ai",
+    "api_style": "openai_chat",
+    "base_url": "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/ai/v1",
+    "model": "@cf/openai/gpt-oss-120b",
+    "fallback_model": "@cf/openai/gpt-oss-20b",
+    "fallback_api_style": "openai_chat",
+    "key_env": "AI_API_KEY",
+    "timeout_s": 25,
+    "max_output_tokens": 2500,
+    "temperature": 0.2,
+    "reasoning_effort": "",
+    "chat_reasoning_effort": "low",
+    "json_mode": false,
+    "display_name": "Cloudflare Workers AI (gpt-oss-120b)",
+    "privacy_note": {
+      "tl": "Ayon sa Cloudflare, hindi nila ginagamit ang text na ito para mag-train ng AI models, at hindi nila ito itinatago pagkatapos maibigay ang sagot (zero data retention, maliban sa limitadong legal o security na exception). Gayunpaman, huwag mag-paste ng bagay na ayaw mong maibahagi.",
+      "en": "Cloudflare states that it does not use this text to train AI models and does not keep it after the response is delivered (zero data retention, with limited legal and security exceptions). Still, do not paste anything you would not want shared.",
+      "ja": "Cloudflareは、このテキストをAIモデルの学習に使用せず、応答の返却後は保持しない（ゼロデータ保持。法令・セキュリティ上の限定的な例外あり）としています。それでも、共有したくない内容は貼り付けないでください。"
+    }
+  }
+}

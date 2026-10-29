@@ -1,0 +1,18 @@
+[
+  {"input": "Tawagan mo ako sa 0917 123 4567 ha", "mustNotContain": ["0917 123 4567"], "mustContain": ["[PHONE]"]},
+  {"input": "My number is +63917-123-4567, text me", "mustNotContain": ["+63917-123-4567"], "mustContain": ["[PHONE]"]},
+  {"input": "Landline (02) 8123 4567 pakitawagan", "mustNotContain": ["8123 4567"], "mustContain": ["[PHONE]"]},
+  {"input": "Email me at juan.delacruz@example.com please", "mustNotContain": ["juan.delacruz@example.com"], "mustContain": ["[EMAIL]"]},
+  {"input": "Card 4111 1111 1111 1111 expires soon", "mustNotContain": ["4111 1111 1111 1111"], "mustContain": ["[CARD]"]},
+  {"input": "My account no. 1234567890 please check", "mustNotContain": ["1234567890"], "mustContain": ["[ACCOUNT]"]},
+  {"input": "482913 is your one-time PIN for your transaction", "mustNotContain": ["482913"], "mustContain": ["[CODE]"]},
+  {"input": "Your OTP is 739201, valid for 5 minutes", "mustNotContain": ["739201"], "mustContain": ["[CODE]"]},
+  {"input": "Hello Maria, kumusta ka?", "mustNotContain": ["Maria"], "mustContain": ["[NAME]"]},
+  {"input": "Hi Juan Dela Cruz, please call me", "mustNotContain": ["Juan Dela Cruz"], "mustContain": ["[NAME]"]},
+  {"input": "Nakatira ako sa Blk 12 Lot 34, sunduin mo ako", "mustNotContain": ["Blk 12 Lot 34"], "mustContain": ["[ADDRESS]"]},
+  {"input": "Meet me at #123 Mabini St., Manila", "mustNotContain": ["#123 Mabini St"], "mustContain": ["[ADDRESS]"]},
+  {"input": "Taga Brgy. Commonwealth ako, dito ako nakatira", "mustNotContain": ["Brgy. Commonwealth"], "mustContain": ["[ADDRESS]"]},
+  {"input": "Check https://gcash.com/help and my number 0917 123 4567", "mustNotContain": ["0917 123 4567"], "mustContain": ["https://gcash.com/help", "[PHONE]"]},
+  {"input": "Bayad ₱1,500 sa GCash bukas 3pm, Oct 31", "mustNotContain": [], "mustContain": ["₱1,500", "3pm", "Oct 31"]},
+  {"input": "Hi GCash, pa-help po sa account ko", "mustNotContain": [], "mustContain": ["GCash"]}
+]

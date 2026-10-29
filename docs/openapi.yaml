@@ -1,0 +1,473 @@
+openapi: 3.1.0
+info:
+  title: Budol Bantay API
+  version: "1"
+  description: >
+    On-device rules engine plus optional LLM verdict for PH scam messages.
+    A rules result is ALWAYS returned when the input is valid; AI problems
+    show up as ai_status, never as an HTTP error.
+servers:
+  - url: http://localhost:8790
+    description: Local dev (BUDOL_ENV=dev)
+  - url: https://abalol.xyz
+    description: Production (behind reverse proxy / tunnel)
+paths:
+  /v1/check:
+    post:
+      summary: Analyze an already-masked message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckRequest'
+      responses:
+        '200':
+          description: Rules result, always; AI verdict when available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckResponse'
+        '400':
+          description: bad_request (invalid JSON, bad fields, text length)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '403':
+          description: origin_not_allowed or turnstile_failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '405':
+          description: method_not_allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '413':
+          description: payload_too_large (body over 8 KB)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '415':
+          description: unsupported_media_type (content-type must be application/json)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '429':
+          description: rate_limited (Retry-After header, per-IP bucket)
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+    options:
+      summary: CORS preflight for /v1/check
+      responses:
+        '204':
+          description: Preflight accepted (allowed origin or no origin)
+        '403':
+          description: origin_not_allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+  /v1/health:
+    get:
+      summary: Liveness probe (never reveals keys)
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '405':
+          description: method_not_allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+    options:
+      summary: CORS preflight for /v1/health
+      responses:
+        '204':
+          description: Preflight accepted
+  /v1/stats:
+    get:
+      summary: Today's aggregate counters (Bearer BUDOL_STATS_TOKEN)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Today's counters only
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatsResponse'
+        '401':
+          description: unauthorized (missing or wrong stats token)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '405':
+          description: method_not_allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+    options:
+      summary: CORS preflight for /v1/stats
+      responses:
+        '204':
+          description: Preflight accepted
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    CheckRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          minLength: 1
+          maxLength: 1500
+          description: Already-masked message text, 1..MAX_TEXT_CHARS chars
+        lang:
+          type: string
+          enum:
+            - tl
+            - en
+            - ja
+          default: tl
+        sender:
+          type: string
+          maxLength: 64
+        ai:
+          type: boolean
+          default: true
+        client_rules:
+          type: object
+          additionalProperties: false
+          required:
+            - score
+            - band
+            - flags
+          properties:
+            score:
+              type: integer
+              minimum: 0
+              maximum: 100
+            band:
+              type: string
+              enum:
+                - hi
+                - mid
+                - lo
+                - none
+            flags:
+              type: array
+              maxItems: 40
+              items:
+                type: string
+                pattern: ^[a-zA-Z]{1,24}$
+        turnstile_token:
+          type: string
+          maxLength: 2048
+          description: Required only when TURNSTILE_SECRET is configured
+    CheckResponse:
+      type: object
+      required:
+        - version
+        - api_version
+        - engine_version
+        - score
+        - band
+        - flags
+        - rules
+        - ai
+        - ai_status
+        - masked_text
+        - masked_counts
+        - model
+        - request_id
+        - disclaimer
+      properties:
+        version:
+          type: string
+          const: "1"
+        api_version:
+          type: string
+          const: v1
+        engine_version:
+          type: string
+          description: Short hash of engine/rules.json
+        score:
+          type: integer
+          minimum: 0
+          maximum: 100
+        band:
+          type: string
+          enum:
+            - hi
+            - mid
+            - lo
+            - none
+        flags:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuleFlag'
+        rules:
+          type: object
+          required:
+            - score
+            - band
+          properties:
+            score:
+              type: integer
+            band:
+              type: string
+              enum:
+                - hi
+                - mid
+                - lo
+                - none
+        ai:
+          oneOf:
+            - $ref: '#/components/schemas/AIVerdict'
+            - type: 'null'
+        ai_status:
+          type: string
+          enum:
+            - ok
+            - disabled
+            - skipped
+            - quota
+            - rate_limited
+            - timeout
+            - error
+            - bad_output
+            - unconfigured
+        masked_text:
+          type: string
+        masked_counts:
+          $ref: '#/components/schemas/MaskedCounts'
+        model:
+          type:
+            - string
+            - 'null'
+        request_id:
+          type: string
+        disclaimer:
+          type: object
+          description: Guidance-only notice that clients must show next to the result (tl, en, ja).
+          required:
+            - tl
+            - en
+            - ja
+          properties:
+            tl:
+              type: string
+            en:
+              type: string
+            ja:
+              type: string
+    RuleFlag:
+      type: object
+      required:
+        - id
+        - weight
+        - category
+        - evidence
+        - message
+      properties:
+        id:
+          type: string
+        weight:
+          type: integer
+        category:
+          type: string
+        evidence:
+          type: string
+        message:
+          $ref: '#/components/schemas/Lang3'
+    AIVerdict:
+      type: object
+      additionalProperties: false
+      required:
+        - verdict
+        - risk
+        - scam_type
+        - red_flags
+        - explanation
+        - actions
+        - injection_detected
+      properties:
+        verdict:
+          type: string
+          enum:
+            - scam
+            - likely_scam
+            - suspicious
+            - unclear
+            - no_red_flags
+        risk:
+          type: integer
+          minimum: 0
+          maximum: 100
+        scam_type:
+          type: string
+          enum:
+            - phishing_link
+            - otp_theft
+            - fake_prize
+            - advance_fee
+            - job_task
+            - parcel
+            - loan
+            - gov_impersonation
+            - bank_ewallet_impersonation
+            - investment_crypto
+            - family_emergency
+            - romance
+            - other
+            - none
+        red_flags:
+          type: array
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/Lang3'
+        explanation:
+          $ref: '#/components/schemas/Lang3'
+        actions:
+          type: array
+          maxItems: 4
+          items:
+            $ref: '#/components/schemas/Lang3'
+        injection_detected:
+          type: boolean
+    Lang3:
+      type: object
+      additionalProperties: false
+      required:
+        - tl
+        - en
+        - ja
+      properties:
+        tl:
+          type: string
+          minLength: 1
+        en:
+          type: string
+          minLength: 1
+        ja:
+          type: string
+          minLength: 1
+    MaskedCounts:
+      type: object
+      required:
+        - phone
+        - email
+        - card
+        - account
+        - otp
+        - name
+        - address
+      properties:
+        phone:
+          type: integer
+        email:
+          type: integer
+        card:
+          type: integer
+        account:
+          type: integer
+        otp:
+          type: integer
+        name:
+          type: integer
+        address:
+          type: integer
+    HealthResponse:
+      type: object
+      required:
+        - ok
+        - version
+        - engine_version
+        - ai_configured
+      properties:
+        ok:
+          type: boolean
+        version:
+          type: string
+        engine_version:
+          type: string
+        ai_configured:
+          type: boolean
+    StatsResponse:
+      type: object
+      required:
+        - counters
+      properties:
+        counters:
+          type: object
+          description: Today's aggregate counters (numbers only, never text)
+          additionalProperties:
+            type: number
+        neurons:
+          type: object
+          description: >-
+            Workers AI neuron ledger for the current UTC day (estimated from
+            provider token usage). When used reaches budget, /v1/check answers
+            rules-only with ai_status "quota". budget 0 = ledger disabled.
+          properties:
+            day_utc:
+              type: string
+            budget:
+              type: number
+            used:
+              type: number
+    ErrorCode:
+      type: string
+      enum:
+        - bad_request
+        - unsupported_media_type
+        - payload_too_large
+        - origin_not_allowed
+        - turnstile_failed
+        - rate_limited
+        - method_not_allowed
+        - not_found
+        - unauthorized
+        - internal
+    ErrorEnvelope:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+            - request_id
+          properties:
+            code:
+              $ref: '#/components/schemas/ErrorCode'
+            message:
+              type: string
+            request_id:
+              type: string

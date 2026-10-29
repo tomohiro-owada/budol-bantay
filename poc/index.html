@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="fil">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<title>Budol Bantay (PoC) — Taglish scam-message checker</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1b1f24;--mute:#5b6570;--hi:#c62828;--mid:#ef6c00;--lo:#f9a825;--none:#2e7d32;--acc:#0b57d0}
+*{box-sizing:border-box}body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;background:var(--bg);color:var(--ink)}
+main{max-width:640px;margin:0 auto;padding:12px 14px 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+h1{font-size:1.35rem;margin:.4em 0}.tag{font-size:.8rem;color:var(--mute);margin:0 0 10px}
+.lang button{border:1px solid #ccd;background:#fff;border-radius:16px;padding:4px 10px;font-size:.85rem}
+.lang button[aria-pressed=true]{background:var(--acc);color:#fff;border-color:var(--acc)}
+.poc{background:#fff3cd;border:1px solid #f0d58a;border-radius:8px;padding:6px 10px;font-size:.82rem;margin-bottom:10px}
+textarea,input{width:100%;font:inherit;padding:10px;border:1px solid #c7ccd3;border-radius:10px;background:#fff}
+textarea{min-height:140px;resize:vertical}label{font-size:.85rem;color:var(--mute);display:block;margin:8px 0 4px}
+.row{display:flex;gap:8px;margin-top:10px}.btn{flex:1;padding:12px;border-radius:10px;border:0;font-weight:600;font-size:1rem;background:var(--acc);color:#fff}
+.btn.sec{background:#e3e7ee;color:var(--ink);flex:0 0 auto}
+.privacy{font-size:.78rem;color:var(--mute);margin:6px 0 0}
+#result{margin-top:16px}.card{background:var(--card);border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden}
+.verdict{padding:14px 16px;color:#fff}.verdict h2{margin:0;font-size:1.2rem}.verdict p{margin:2px 0 0;font-size:.9rem;opacity:.95}
+.meter{height:8px;background:rgba(255,255,255,.35);border-radius:4px;margin-top:8px}.meter i{display:block;height:100%;background:#fff;border-radius:4px}
+.sec2{padding:12px 16px;border-top:1px solid #eef0f3}.sec2 h3{margin:0 0 6px;font-size:.95rem}
+ul{margin:0;padding-left:20px}li{margin:3px 0}.ev{color:var(--mute);font-size:.8rem}
+.disc{font-size:.75rem;color:var(--mute);padding:10px 16px;background:#fafbfc}
+details{margin-top:18px;background:#fff;border-radius:12px;padding:8px 12px}summary{font-weight:600;cursor:pointer}
+.ex{display:block;width:100%;text-align:left;border:1px solid #e1e5ea;background:#fbfcfd;border-radius:8px;padding:8px;margin:6px 0;font:inherit;font-size:.85rem}
+.ex b{color:var(--acc)}footer{font-size:.75rem;color:var(--mute);margin-top:20px}
+table{border-collapse:collapse;font-size:.75rem;width:100%}td,th{border:1px solid #ddd;padding:3px}
+</style>
+</head>
+<body>
+<main>
+<header><h1>🛡️ Budol Bantay</h1>
+<div class="lang" role="group" aria-label="Language">
+<button data-l="tl" aria-pressed="true">Taglish</button><button data-l="en">EN</button><button data-l="ja">日本語</button></div></header>
+<p class="tag" data-i="tagline"></p>
+<div class="poc" data-i="pocnote"></div>
+<label for="msg" data-i="pasteLabel"></label>
+<textarea id="msg" autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
+<label for="sender" data-i="senderLabel"></label>
+<input id="sender" autocomplete="off" placeholder="e.g. GCash / 0917… / +63…">
+<div class="row"><button class="btn" id="go" data-i="check"></button><button class="btn sec" id="clr" data-i="clear"></button></div>
+<p class="privacy" data-i="privacy"></p>
+<div id="result" aria-live="polite"></div>
+<details id="exbox"><summary data-i="examples"></summary><p class="ev" data-i="exNote"></p><div id="exlist"></div></details>
+<footer data-i="footer"></footer>
+</main>
+<script>
+"use strict";
+/* ===================== i18n ===================== */
+const T={
+tl:{tagline:"I-paste ang kahina-hinalang text, Messenger, Viber o email. Titingnan namin ang mga karaniwang senyales ng scam.",
+pocnote:"⚠️ PROOF OF CONCEPT lang ito. Rules-only, walang AI, walang network. Hindi pa tapos ang mga rule.",
+pasteLabel:"I-paste ang mensahe dito",senderLabel:"Sino ang nag-send? (optional — pangalan o number na nakita mo)",
+check:"I-check",clear:"Burahin",privacy:"🔒 Dito lang sa phone mo chine-check. Walang ipinapadala o sine-save. Pwede mong takpan ang personal info bago i-paste.",
+examples:"Mga halimbawang mensahe (EXAMPLES — gawa-gawa lang)",exNote:"Gawa-gawa ang lahat ng halimbawa, pati mga link at number. Huwag bisitahin ang mga link.",
+hi:"MATAAS ang panganib — malamang SCAM",mid:"KAHINA-HINALA — mag-ingat",lo:"May ilang senyales — i-verify muna",none:"Walang nakitang karaniwang red flag",
+hiSub:"Huwag i-click, huwag magbayad, huwag ibigay ang OTP/MPIN.",midSub:"Maraming scam ang ganito ang itsura. I-verify sa official na app o hotline.",loSub:"Hindi ibig sabihin na scam, pero mag-double check.",noneSub:"Hindi ito garantiya na ligtas. Bago at iba-iba ang modus ng scammers.",
+why:"Bakit?",todo:"Ano ang dapat gawin",score:"Risk score",empty:"Walang mensahe. Mag-paste muna.",
+share:"I-download bilang larawan (walang laman ng mensahe)",disc:"Hindi kami konektado sa CICC, NTC, BSP, GCash, Maya o anumang bangko/ahensya. Gabay lang ito, hindi legal o financial advice.",
+footer:"Non-profit project ni abalol.xyz. PoC build — hindi pa ito ang final na tool.",
+tryEx:"Subukan"},
+en:{tagline:"Paste a suspicious SMS, Messenger, Viber or email message. We check it for common scam warning signs.",
+pocnote:"⚠️ PROOF OF CONCEPT. Rules-only, no AI, no network. Rules are incomplete.",
+pasteLabel:"Paste the message here",senderLabel:"Who sent it? (optional — the name or number you saw)",
+check:"Check",clear:"Clear",privacy:"🔒 Checked only on your phone. Nothing is sent or saved. You can blank out personal info before pasting.",
+examples:"Example messages (EXAMPLES — made up)",exNote:"All examples, links and numbers are fictional. Do not visit the links.",
+hi:"HIGH risk — very likely a SCAM",mid:"SUSPICIOUS — be careful",lo:"Some warning signs — verify first",none:"No common red flags found",
+hiSub:"Don't click, don't pay, never share your OTP/MPIN.",midSub:"Many scams look like this. Verify through the official app or hotline.",loSub:"Not necessarily a scam, but double-check.",noneSub:"This is NOT a guarantee it is safe. Scam tactics change constantly.",
+why:"Why?",todo:"What to do",score:"Risk score",empty:"No message yet. Paste one first.",
+share:"Download as image (message text not included)",disc:"Not affiliated with CICC, NTC, BSP, GCash, Maya or any bank/agency. Guidance only, not legal or financial advice.",
+footer:"Non-profit project by abalol.xyz. PoC build — not the final tool.",tryEx:"Try"},
+ja:{tagline:"怪しいSMS・Messenger・Viber・メールを貼り付けると、よくある詐欺の兆候をチェックします。",
+pocnote:"⚠️ 概念実証(PoC)です。ルールのみ・AIなし・通信なし。ルールは未完成です。",
+pasteLabel:"メッセージをここに貼り付け",senderLabel:"送信者(任意 — 表示された名前や番号)",
+check:"チェック",clear:"消去",privacy:"🔒 チェックはこの端末内だけで行われ、何も送信・保存されません。個人情報は伏せてから貼り付けてもOKです。",
+examples:"サンプルメッセージ(例文 — 架空)",exNote:"例文・リンク・番号はすべて架空です。リンクにはアクセスしないでください。",
+hi:"危険度 高 — 詐欺の可能性が非常に高い",mid:"要注意 — 怪しい",lo:"いくつか注意点あり — まず確認を",none:"よくある危険サインは見つかりませんでした",
+hiSub:"クリックしない・支払わない・OTP/MPINは絶対に教えない。",midSub:"多くの詐欺がこの形です。公式アプリや窓口で確認を。",loSub:"詐欺とは限りませんが、念のため確認を。",noneSub:"安全の保証ではありません。手口は常に変わります。",
+why:"理由",todo:"やるべきこと",score:"リスクスコア",empty:"メッセージがありません。先に貼り付けてください。",
+share:"画像として保存(本文は含まれません)",disc:"CICC・NTC・BSP・GCash・Maya・銀行・政府機関とは無関係です。参考情報であり法的・金融アドバイスではありません。",
+footer:"abalol.xyz の非営利プロジェクト。PoC版であり完成版ではありません。",tryEx:"試す"}};
+
+/* ===================== data ===================== */
+const SHORTENERS=["bit.ly","tinyurl.com","cutt.ly","is.gd","t.ly","rb.gy","s.id","shorturl.at","tiny.cc","ow.ly","rebrand.ly","goo.su","t.co","buff.ly","shorturl.asia","v.gd","qr.ae","u.to","clck.ru","bitly.ws","lnkd.in","tinyurl.ph"];
+const RISKY_TLDS=["top","xyz","icu","vip","cc","buzz","shop","live","click","info","online","site","club","cyou","sbs","cfd","rest","monster","lol","mom","quest","bond","win","work","support","help","app"];
+/* Official registrable domains (MUST be re-verified before launch). Being on this list never makes a message "safe". */
+const OFFICIAL={gcash:["gcash.com"],maya:["maya.ph","paymaya.com"],bdo:["bdo.com.ph"],bpi:["bpi.com.ph"],landbank:["landbank.com"],metrobank:["metrobank.com.ph"],
+unionbank:["unionbankph.com"],securitybank:["securitybank.com"],pnb:["pnb.com.ph"],rcbc:["rcbc.com"],chinabank:["chinabank.ph"],gotyme:["gotyme.com.ph"],
+sss:["sss.gov.ph"],dswd:["dswd.gov.ph"],philhealth:["philhealth.gov.ph"],pagibig:["pagibigfund.gov.ph"],bir:["bir.gov.ph"],lto:["lto.gov.ph"],
+lbc:["lbcexpress.com"],jnt:["jtexpress.ph"],jtexpress:["jtexpress.ph"],phlpost:["phlpost.gov.ph"],shopee:["shopee.ph"],lazada:["lazada.com.ph"],
+cicc:["cicc.gov.ph"],ntc:["ntc.gov.ph"],bsp:["bsp.gov.ph"],meralco:["meralco.com.ph"],globe:["globe.com.ph"],smart:["smart.com.ph"]};
+const BRAND_WORDS={ewallet:/\b(g-?cash|gcash|maya|paymaya|shopeepay|gotyme|coins\.ph|grabpay)\b/i,
+bank:/\b(bdo|bpi|landbank|metrobank|unionbank|security ?bank|pnb|rcbc|china ?bank|eastwest|psbank|bank|banko)\b/i,
+gov:/\b(dswd|sss|philhealth|pag-?ibig|bir|lto|dfa|dole|owwa|4ps|aics|ayuda|tupad|nbi|pnp|gsis|comelec|lgu|barangay)\b/i,
+courier:/\b(lbc|j&t|j ?& ?t|jnt|jt express|ninja ?van|flash express|phlpost|philpost|2go|grab ?express|lalamove|dhl|fedex|ups|parcel|package|padala|shipment|courier)\b/i,
+shop:/\b(shopee|lazada|tiktok shop|temu|zalora)\b/i};
+const TWO_LEVEL=/\.(com|gov|org|net|edu|mil)\.ph$/;
+function regDomain(h){h=h.toLowerCase().replace(/^www\./,"");const p=h.split(".");if(TWO_LEVEL.test(h))return p.slice(-3).join(".");return p.slice(-2).join(".");}
+
+/* ===================== rules =====================
+   Each rule: id, w (weight), cat (advice category), test(ctx) -> evidence string|null */
+const R=(re)=>(c)=>{const m=c.t.match(re);return m?m[0]:null};
+const RULES=[
+{id:"shortener",w:25,cat:"link",test:c=>{const s=c.urls.find(u=>SHORTENERS.includes(u.reg)||SHORTENERS.includes(u.host));return s?s.host:null}},
+{id:"lookalike",w:35,cat:"link",test:c=>{for(const u of c.urls){for(const k in OFFICIAL){const kk=k.replace("jnt","j-?n?t");if(new RegExp(kk,"i").test(u.host.replace(/[^a-z0-9]/g,""))&&!OFFICIAL[k].includes(u.reg))return u.host;} if(/gov-?ph|govph/.test(u.host)&&!u.host.endsWith(".gov.ph"))return u.host;}return null}},
+{id:"riskytld",w:15,cat:"link",test:c=>{const u=c.urls.find(u=>RISKY_TLDS.includes(u.host.split(".").pop()));return u?u.host:null}},
+{id:"rawip",w:25,cat:"link",test:c=>{const u=c.urls.find(u=>/^\d{1,3}(\.\d{1,3}){3}$/.test(u.host)||u.host.includes("xn--"));return u?u.host:null}},
+{id:"brandlink",w:20,cat:"link",test:c=>c.urls.length&&(BRAND_WORDS.ewallet.test(c.t)||BRAND_WORDS.bank.test(c.t))?c.urls[0].host:null},
+{id:"link",w:10,cat:"link",test:c=>c.urls.length?c.urls[0].host:null},
+{id:"credential",w:40,cat:"cred",test:c=>{const re=/\b(paki-?send|i-?send|send|ibigay|bigay|i-?reply|reply|i-?type|ilagay|enter|provide|share|sabihin|i-?forward|forward)\b[^.!?\n]{0,40}\b(otp|one[- ]time pin|mpin|pin|password|passcode|cvv|card number|verification code|code)\b|\b(otp|mpin|cvv|password|verification code)\b[^.!?\n]{0,30}\b(paki-?send|i-?send|ibigay|i-?reply|reply|send|ilagay|enter)\b/gi;for(const m of c.t.matchAll(re)){const pre=c.t.slice(Math.max(0,m.index-25),m.index);if(/\b(never|do not|don'?t|huwag|wag|hindi)\b[^.!?\n]*$/i.test(pre+m[0].split(/\s/)[0]+" ")||/^(share|sabihin)\b/i.test(m[0])&&/\b(never|do not|don'?t|huwag|wag)\s*(ever\s*)?$/i.test(pre))continue;return m[0]}return null}},
+{id:"verifyacct",w:15,cat:"cred",test:R(/\b(i-?verify|verify|i-?update|update|confirm|i-?confirm|re-?activate|i-?activate|unlock|login|log in|mag-?login)\b[^.!?\n]{0,40}\b(account|info|information|details|kyc|identity|card|wallet)\b/i)},
+{id:"threat",w:15,cat:"cred",test:R(/\b(suspend(ed)?|deactivat\w*|ma-?deactivate|na-?lock|ma-?lock|locked|blocked|ma-?block|restrict\w*|na-?hold|frozen|i-?freeze|closed|terminated|ma-?forfeit|forfeit\w*)\b/i)},
+{id:"urgency",w:15,cat:"gen",test:R(/\b(within \d+ ?(hours?|hrs?|minutes?|mins?|oras|araw)|\d+ ?(hrs?|oras)|ngayon din|ngayong araw|agad|agad-agad|asap|urgent|immediately|final (notice|warning)|huling paalala|last chance|today only|expire[sd]?|mag-?e-?expire|bago mag|before (midnight|\w+ \d+)|limited slots?)\b/i)},
+{id:"prize",w:25,cat:"prize",test:R(/\b(congratulations|congrats|nanalo|panalo|you (have )?won|winner|raffle|napili ka|selected|lucky|claim (your|ang) (prize|premyo|reward)|premyo|grand prize|jackpot)\b/i)},
+{id:"feeToClaim",w:25,cat:"pay",test:c=>/\b(processing|handling|redelivery|delivery|release|insurance|clearance|membership|registration|activation|verification|tax|shipping|service|customs) fee\b|\bfee\b|\bbayad\b|magbayad|bayaran/i.test(c.t)&&(c.hasPrize||c.hasLoan||c.hasJob||c.hasParcel)?(c.t.match(/\b\w+ fee\b|magbayad|bayad/i)||[""])[0]:null},
+{id:"sendMoney",w:20,cat:"pay",test:R(/\b(pa-?send|magpadala|ipadala|i-?send|send|transfer|deposit|i-?deposit|pa-?load|load|cash ?in|top ?up|recharge|bayaran)\b[^.!?\n]{0,50}(₱|php|p\s?\d|\d{3,}|gcash|maya|account|0?9\d{2})/i)},
+{id:"personalAcct",w:15,cat:"pay",test:R(/\b(gcash|maya)\b[^.!?\n]{0,15}(0|\+63)9[\dx]{2}[\s-]?[\dx]{3}[\s-]?[\dx]{4}/i)},
+{id:"job",w:20,cat:"job",test:R(/\b(hiring|part-?time|work from home|wfh|online job|home-?based|no experience|walang experience|daily (pay|salary)|commission|kumita|earn)\b/i)},
+{id:"highpay",w:15,cat:"job",test:R(/(₱|php|p)\s?[\d,]{3,}\s?(-|–|to)?\s?(₱|php|p)?\s?[\d,]*\s?\/?\s?(per )?(day|araw|daily|hour|oras|isang araw)/i)},
+{id:"task",w:30,cat:"job",test:R(/\b(like|follow|rate|review|subscribe|mag-?like|mag-?review)\b[^.!?\n]{0,40}\b(product|video|page|task|order|hotel|app)s?\b|\btask\b[^.!?\n]{0,40}\b(recharge|deposit|unlock|top ?up)\b/i)},
+{id:"offplatform",w:15,cat:"gen",test:R(/\b(telegram|whatsapp|wechat|signal|line app)\b|@[a-z0-9_]{4,}\b/i)},
+{id:"parcel",w:25,cat:"parcel",test:c=>c.hasParcel&&/\b(on hold|naka-?hold|na-?hold|failed (delivery|attempt)|hindi (ma-?deliver|na-?deliver)|incomplete address|kulang (ang )?address|wrong address|unpaid|customs|redelivery|ibalik)\b/i.test(c.t)?"parcel/hold":null},
+{id:"loan",w:25,cat:"loan",test:R(/\b(loan|utang|pautang|cash advance|instant cash|pre-?approved|approved na|no collateral|walang collateral|low interest)\b/i)},
+{id:"ayuda",w:20,cat:"gov",test:c=>BRAND_WORDS.gov.test(c.t)&&/\b(ayuda|cash assistance|financial assistance|subsidy|benefit|claim|i-?claim|register|mag-?register|listahan|qualified|beneficiar\w*|payout)\b/i.test(c.t)?(c.t.match(BRAND_WORDS.gov)||[""])[0]:null},
+{id:"invest",w:30,cat:"invest",test:R(/\b(guaranteed|garantisado|double your|doble|daily profit|\d+% (daily|weekly|per day|kada araw)|passive income|usdt|bitcoin|crypto|forex|trading|investment|invest|paluwagan|vip group)\b/i)},
+{id:"family",w:25,cat:"family",test:R(/\b(bagong number ko|new number ko|new number|nasira (ang )?phone|nawala (ang )?(phone|cellphone)|this is your (son|daughter)|si [A-Z][a-z]+ (ito|'to)|emergency lang|na-?ospital|naaksidente|nahuli ng pulis)\b/i)},
+{id:"secrecy",w:15,cat:"gen",test:R(/\b(huwag (mo )?(munang |muna )?(sabihin|ipaalam)|wag (mo )?(muna )?sabihin|keep (this )?(confidential|secret)|don'?t tell|atin-atin lang)\b/i)},
+{id:"remote",w:30,cat:"cred",test:R(/\b(anydesk|teamviewer|rustdesk|quicksupport|\.apk|i-?download ang app|download (this|the) app|install (this|the) app)\b/i)},
+{id:"qr",w:10,cat:"link",test:R(/\b(scan (the |this )?qr|i-?scan ang qr|qr code)\b/i)},
+{id:"replyYes",w:10,cat:"gen",test:R(/\b(reply|i-?reply|text back)\s+(yes|oo|interested|1|ok)\b/i)},
+{id:"senderMobile",w:20,cat:"gen",test:c=>c.sender&&/^(\+?63|0)9[\dx]{9}$/i.test(c.sender.replace(/[\s-]/g,""))&&[BRAND_WORDS.ewallet,BRAND_WORDS.bank,BRAND_WORDS.gov,BRAND_WORDS.courier].some(b=>b.test(c.t.slice(0,60)))?c.sender:null},
+{id:"fakePermit",w:10,cat:"prize",test:R(/\b(dti (permit|fair trade permit)|per dti|dti-?fto)\b/i)},
+];
+/* Mitigator: standard OTP notice ("never share") with no link and no request */
+const NEG=[{id:"otpNotice",w:-25,test:c=>/\b(never|do not|don'?t|huwag|wag) (ever )?(share|ibigay|sabihin|i-?share)\b[^.!?\n]{0,30}\b(otp|pin|code|password)/i.test(c.t)&&!c.urls.length?"never share":null}];
+
+const FLAG={ /* explanations [tl,en,ja] */
+shortener:["May shortened link (hal. bit.ly). Tinatago nito kung saan ka talaga dadalhin.","Contains a shortened link (e.g. bit.ly) that hides the real destination.","短縮URL(bit.ly等)があり、本当の行き先が隠されています。"],
+lookalike:["Ang link ay nagpapanggap na brand/gobyerno pero HINDI official domain.","The link imitates a brand/government name but is NOT the official domain.","ブランドや政府を装ったリンクですが、公式ドメインではありません。"],
+riskytld:["Ang link ay gumagamit ng domain ending na madalas gamitin sa scam (.top, .xyz, .icu…).","The link uses a domain ending often abused by scammers (.top, .xyz, .icu…).","詐欺でよく使われるドメイン(.top/.xyz/.icu等)です。"],
+rawip:["Kakaibang link (IP address o punycode).","Unusual link (raw IP address or punycode look-alike).","不自然なリンク(IPアドレスやpunycode)です。"],
+brandlink:["Nagbanggit ng bangko/e-wallet AT may link. Ang GCash, Maya at mga bangko ay hindi nagpapadala ng link para mag-login (AFASA).","Mentions a bank/e-wallet AND includes a link. GCash, Maya and banks don't send login links by SMS (AFASA rules).","銀行/電子ウォレット名とリンクが同時にあります。GCashやMaya、銀行はSMSでログイン用リンクを送りません(AFASA)。"],
+link:["May link sa mensahe. Huwag i-click kung hindi ka sigurado.","The message contains a link. Don't tap it unless you're sure.","リンクが含まれています。確信がなければ開かないでください。"],
+credential:["Humihingi ng OTP / MPIN / password / code. Walang lehitimong kumpanya ang hihingi nito.","Asks for your OTP / MPIN / password / code. No legitimate company asks for these.","OTP・MPIN・パスワード等を求めています。正規の企業は絶対に求めません。"],
+verifyacct:["Pinapa-verify o pinapa-update ang account mo.","Asks you to verify/update your account details.","アカウントの確認・更新を求めています。"],
+threat:["Nananakot na ila-lock, isa-suspend o ma-forfeit ang account/benepisyo.","Threatens that your account/benefit will be locked, suspended or forfeited.","アカウント停止・失効などで脅しています。"],
+urgency:["Minamadali ka (hal. 'within 24 hours', 'ngayon din').","Pressures you to act fast (e.g. 'within 24 hours').","急がせています(「24時間以内」など)。"],
+prize:["Sinasabing nanalo ka o napili ka sa raffle/promo.","Claims you won or were selected for a prize/raffle.","当選・選ばれたと言っています。"],
+feeToClaim:["Pinapabayad ka muna ng 'fee' para makuha ang premyo/loan/trabaho/parcel.","Asks you to pay a 'fee' first to get a prize/loan/job/parcel.","賞品・ローン・仕事・荷物のために先に「手数料」を求めています。"],
+sendMoney:["Humihingi ng pera o load.","Asks you to send money or load.","送金・ロードを求めています。"],
+personalAcct:["Pinapadala sa personal na GCash/Maya number, hindi sa official na account.","Payment goes to a personal GCash/Maya number, not an official account.","公式でない個人のGCash/Maya番号への支払いです。"],
+job:["Alok na trabaho na madali/online/walang experience.","Unsolicited easy/online/no-experience job offer.","簡単・在宅・未経験OKの勧誘です。"],
+highpay:["Sobrang laking sweldo kada araw para sa simpleng trabaho.","Unrealistically high daily pay for simple work.","簡単な作業に対して高すぎる日給です。"],
+task:["Mukhang 'task scam': mag-like/review tapos pagdedepositohin ka.","Looks like a 'task scam': like/review tasks that later require deposits.","「タスク詐欺」型:いいね・レビュー作業後に入金を要求される手口です。"],
+offplatform:["Pinapalipat ka sa Telegram/WhatsApp o ibang app.","Moves you to Telegram/WhatsApp or another app.","Telegram/WhatsApp等へ誘導しています。"],
+parcel:["'Parcel on hold' na modus — kunwaring may problema sa padala mo.","'Parcel on hold' pattern — fake delivery problem.","「荷物保留」型の手口です。"],
+loan:["Alok na loan na 'approved na' kahit hindi ka nag-apply.","Loan offer 'already approved' that you didn't apply for.","申し込んでいないのに「承認済み」のローン勧誘です。"],
+ayuda:["Nagbabanggit ng ahensya ng gobyerno/ayuda at pinapa-claim o pinapa-register ka.","Uses a government agency/ayuda name and asks you to claim or register.","政府機関・給付金の名前で受取・登録を促しています。"],
+invest:["'Guaranteed' na kita, crypto o investment na sobrang taas ng tubo.","'Guaranteed' returns, crypto, or too-good-to-be-true investment.","「保証付き」高利回り・暗号資産の投資勧誘です。"],
+family:["Nagpapanggap na kapamilya na may bagong number/emergency.","Pretends to be a family member with a new number/emergency.","新しい番号・緊急事態を装った家族なりすましです。"],
+secrecy:["Pinapalihim sa iba. Taktika ito para walang makapigil sa iyo.","Asks you to keep it secret — so no one can stop you.","秘密にするよう求めています(止められないようにする手口)。"],
+remote:["Pinapa-install ng app/APK o remote-access app (AnyDesk, atbp).","Asks you to install an app/APK or remote-access tool (AnyDesk etc).","アプリ/APKや遠隔操作アプリ(AnyDesk等)のインストールを求めています。"],
+qr:["Pinapa-scan ng QR code.","Asks you to scan a QR code.","QRコードの読み取りを求めています。"],
+replyYes:["Pinapa-reply ng 'YES' — para malaman na active ang number mo.","Asks you to reply 'YES' — confirms your number is active.","「YES」と返信させる手口(番号の有効確認)。"],
+senderMobile:["Nagpapanggap na kumpanya/ahensya pero galing sa ordinaryong 09xx number.","Claims to be a company/agency but came from a regular 09xx number.","企業・機関を名乗るのに通常の09xx携帯番号から届いています。"],
+fakePermit:["Naglagay ng 'DTI permit' para magmukhang totoo — madaling pekein ito.","Cites a 'DTI permit' to look legit — easily faked.","「DTI許可番号」で本物らしく見せています(簡単に偽造可能)。"],
+otpNotice:["Mukhang karaniwang OTP notice na nagsasabing 'huwag ibigay' (binawasan ang score).","Looks like a standard OTP notice saying 'never share' (score reduced).","「共有しないで」という通常のOTP通知に見えます(スコア減算)。"]};
+
+const ADV={ /* advice per category [tl,en,ja] */
+always:["Huwag i-click ang link at huwag mag-reply. I-verify gamit ang official app o hotline na ikaw mismo ang naghanap.","Don't tap links or reply. Verify using the official app or a hotline you look up yourself.","リンクを開かず返信もしないでください。自分で調べた公式アプリ・窓口で確認を。"],
+cred:["Kung naibigay mo na ang OTP/MPIN: tawagan agad ang bangko/e-wallet gamit ang official hotline sa app nila at ipa-lock ang account.","If you already shared an OTP/MPIN: immediately contact your bank/e-wallet via the official hotline in their app and lock the account.","OTP/MPINを教えてしまった場合:すぐ公式アプリ内の窓口で銀行/ウォレットに連絡しアカウントを凍結。"],
+pay:["Huwag magpadala ng pera. Kung nakapagpadala na, i-report agad sa GCash/Maya/bangko (in-app Help) at itago ang reference number.","Don't send money. If you already did, report it in the GCash/Maya/bank app Help right away and keep the reference number.","送金しないでください。送金済みなら直ちにGCash/Maya/銀行アプリのヘルプで報告し、参照番号を保管。"],
+job:["Ang tunay na trabaho ay hindi ka pagbabayarin para kumita. 'Never pay to get paid.'","Real jobs never make you pay to earn. Never pay to get paid.","本物の仕事でお金を払わされることはありません。"],
+parcel:["I-check ang tracking sa official app/website ng courier (hal. LBC, J&T) — hindi sa link sa text.","Check tracking only in the courier's official app/website (e.g. LBC, J&T) — not via the text's link.","追跡は配送会社(LBC、J&T等)の公式アプリ/サイトで。SMSのリンクは使わない。"],
+gov:["Ang ayuda ay inaanunsyo sa official na page ng ahensya. Walang bayad ang pag-claim.","Government aid is announced on the agency's official page. Claiming never costs a fee.","給付は機関の公式ページで告知されます。受取に手数料はかかりません。"],
+invest:["I-check sa SEC kung rehistrado at may lisensya ang investment. 'Guaranteed' na tubo = red flag.","Check with the SEC whether the investment is registered and licensed. 'Guaranteed' returns = red flag.","SECで登録・許可を確認。「利回り保証」は危険信号。"],
+family:["Tawagan ang kapamilya sa LUMANG number niya o magtanong ng bagay na kayo lang ang nakakaalam.","Call the family member on their OLD number or ask something only they would know.","家族の「以前の番号」に電話するか、本人しか知らない質問を。"],
+loan:["Mag-loan lang sa SEC-registered na lending company. Walang bayad bago ma-release ang loan.","Only borrow from SEC-registered lenders. No fee should be paid before release.","SEC登録の貸金業者のみ利用。融資前の手数料は不要。"],
+report:["I-report: CICC Hotline 1326 (24/7) • report@cicc.gov.ph • eGovPH app → Report. I-forward/i-block ang number.","Report: CICC Hotline 1326 (24/7) • report@cicc.gov.ph • eGovPH app → Report. Block the number.","通報:CICCホットライン1326(24時間)• report@cicc.gov.ph • eGovPHアプリ→Report。番号はブロック。"]};
+
+/* ===================== engine ===================== */
+const URL_RE=/\b((?:https?:\/\/)?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+(?:[a-z]{2,24}|xn--[a-z0-9-]+)(?::\d+)?(?:\/[^\s<>"']*)?)|\bhttps?:\/\/\d{1,3}(?:\.\d{1,3}){3}[^\s]*/gi;
+const NOT_URL=/^(e\.g|i\.e|p\.s|a\.m|p\.m|etc|mr|ms|dr|st)\b/i;
+function extractUrls(t){const out=[];for(const m of t.matchAll(URL_RE)){let s=m[0].replace(/[.,;:!?)]+$/,"");if(NOT_URL.test(s))continue;let h=s.replace(/^https?:\/\//i,"").split(/[\/:?#]/)[0].toLowerCase();
+ const tld=h.split(".").pop();if(!/^\d+$/.test(tld)&&!/^(com|net|org|ph|gov|info|xyz|top|icu|vip|cc|buzz|shop|live|click|online|site|club|ly|gd|id|io|co|me|app|link|to|in|at|ws|ru|asia|cyou|sbs|cfd|rest|monster|lol|mom|quest|bond|win|work|support|help|us|uk|sg|my|cn|de|xn--.*)$/.test(tld))continue;
+ out.push({raw:s,host:h,reg:regDomain(h)});}return out;}
+function analyze(text,sender){
+ const t=text.normalize("NFKC").replace(/[\u200b-\u200d\ufeff]/g,"");
+ const c={t,sender:(sender||"").trim(),urls:extractUrls(t)};
+ c.hasPrize=/\b(nanalo|panalo|won|winner|raffle|prize|premyo|congratulations)\b/i.test(t);c.hasLoan=/\b(loan|utang|pautang)\b/i.test(t);
+ c.hasJob=/\b(hiring|job|trabaho|part-?time|task)\b/i.test(t);c.hasParcel=BRAND_WORDS.courier.test(t);
+ const hits=[];let s=0;
+ for(const r of RULES){let ev=null;try{ev=r.test(c)}catch(e){} if(ev){hits.push({id:r.id,w:r.w,cat:r.cat,ev:String(ev).slice(0,60)});s+=r.w;}}
+ // "link" only counts when no stronger link rule fired
+ if(hits.some(h=>["shortener","lookalike","rawip"].includes(h.id))){const i=hits.findIndex(h=>h.id==="link");if(i>=0){s-=hits[i].w;hits.splice(i,1);}}
+ for(const n of NEG){const ev=n.test(c);if(ev&&!hits.some(h=>["credential","sendMoney","remote"].includes(h.id))){hits.push({id:n.id,w:n.w,cat:"gen",ev});s+=n.w;}}
+ // combo boosts: classic kill-chains
+ const has=id=>hits.some(h=>h.id===id);
+ if(has("credential")&&(has("threat")||has("urgency")))s+=10;
+ if(has("lookalike")&&has("verifyacct"))s+=10;
+ s=Math.max(0,Math.min(100,s));
+ const level=s>=60?"hi":s>=30?"mid":s>=10?"lo":"none";
+ const cats=[...new Set(hits.map(h=>h.cat))];
+ return {score:s,level,hits:hits.sort((a,b)=>b.w-a.w),cats,urls:c.urls};
+}
+
+/* ===================== UI ===================== */
+let L="tl",last=null;const $=s=>document.querySelector(s);
+const COL={hi:"#c62828",mid:"#ef6c00",lo:"#b26a00",none:"#2e7d32"};const LI={tl:0,en:1,ja:2};
+function esc(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function applyLang(){document.querySelectorAll("[data-i]").forEach(e=>e.textContent=T[L][e.dataset.i]);document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===L));document.documentElement.lang=L==="tl"?"fil":L;$("#msg").placeholder=L==="ja"?"例: 「GCash: アカウントがロックされました…」":"hal. \"GCash: Ang account mo ay na-lock…\"";renderEx();if(last)render(last);}
+function render(r){last=r;const i=LI[L];const adv=[ADV.always[i]];
+ const order=["cred","pay","job","parcel","gov","invest","family","loan"];for(const k of order)if(r.cats.includes(k)&&ADV[k])adv.push(ADV[k][i]);
+ if(r.level!=="none")adv.push(ADV.report[i]);else adv.push(ADV.report[i]);
+ $("#result").innerHTML=`<div class="card"><div class="verdict" style="background:${COL[r.level]}"><h2>${T[L][r.level]}</h2><p>${T[L][r.level+"Sub"]}</p>
+ <div class="meter" title="${T[L].score} ${r.score}/100"><i style="width:${Math.max(3,r.score)}%"></i></div><p>${T[L].score}: ${r.score}/100</p></div>
+ ${r.hits.length?`<div class="sec2"><h3>${T[L].why}</h3><ul>${r.hits.map(h=>`<li>${esc(FLAG[h.id][i])} <span class="ev">“${esc(h.ev)}”</span></li>`).join("")}</ul></div>`:""}
+ <div class="sec2"><h3>${T[L].todo}</h3><ul>${adv.map(a=>`<li>${esc(a)}</li>`).join("")}</ul></div>
+ <div class="sec2"><button class="btn" id="dl">${T[L].share}</button></div>
+ <div class="disc">${T[L].disc}</div></div>`;
+ $("#dl").onclick=()=>shareImg(r);}
+function wrap(ctx,text,x,y,maxW,lh){let line="";const words=L==="ja"?[...text]:text.split(" ");const sep=L==="ja"?"":" ";for(const w of words){const test=line?line+sep+w:w;if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,y);y+=lh;line=w}else line=test}ctx.fillText(line,x,y);return y+lh}
+function shareImg(r){const i=LI[L],W=1080,H=1080,cv=document.createElement("canvas");cv.width=W;cv.height=H;const x=cv.getContext("2d");
+ x.fillStyle="#fff";x.fillRect(0,0,W,H);x.fillStyle=COL[r.level];x.fillRect(0,0,W,300);x.fillStyle="#fff";x.font="bold 40px system-ui,sans-serif";x.fillText("🛡️ Budol Bantay",60,80);
+ x.font="bold 54px system-ui,sans-serif";let y=wrap(x,T[L][r.level],60,170,W-120,64);x.font="34px system-ui,sans-serif";x.fillText(`${T[L].score}: ${r.score}/100`,60,Math.min(y+10,285));
+ x.fillStyle="#1b1f24";x.font="bold 38px system-ui,sans-serif";y=380;x.fillText(T[L].why,60,y);y+=56;x.font="32px system-ui,sans-serif";
+ for(const h of r.hits.slice(0,5)){y=wrap(x,"• "+FLAG[h.id][i],60,y,W-120,42)+8;if(y>860)break;}
+ x.fillStyle="#0b57d0";x.font="bold 32px system-ui,sans-serif";x.fillText("CICC Hotline 1326",60,960);x.fillStyle="#5b6570";x.font="26px system-ui,sans-serif";x.fillText("abalol.xyz/budol-bantay  •  not affiliated with any agency",60,1010);
+ cv.toBlob(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="budol-bantay-result.png";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000)},"image/png");}
+
+/* ===================== EXAMPLES (fictional) ===================== */
+const EX=[
+{s:"GCash",m:"GCash: Ang iyong account ay pansamantalang na-lock dahil sa kahina-hinalang aktibidad. I-verify ang account within 24 hours para hindi ma-deactivate: https://gcash-ph-verify.top/login"},
+{s:"LBC",m:"LBC Express: Ang parcel mo ay naka-hold dahil incomplete address. I-update at magbayad ng ₱45 redelivery fee bago mag 6PM: bit.ly/lbc-ph-upd8"},
+{s:"09XX XXX 0001",m:"Hi! Hiring kami ng part-time online staff. ₱800-₱3,000/araw, mag-like at review lang ng products. No experience needed. Message sa Telegram @hr_anna_ph"},
+{s:"",m:"CONGRATULATIONS! Nanalo ka ng ₱50,000 at Toyota Vios sa Shopee 10th Anniversary Raffle. Para ma-claim, magpadala ng ₱1,500 processing fee sa GCash 09XX-XXX-0002. DTI Permit No. 12345"},
+{s:"09XX XXX 0003",m:"Good day po, from Maya Security Team. May nag-attempt mag-login sa account mo. Para ma-cancel, paki-send ang 6-digit OTP na natanggap mo ngayon din."},
+{s:"",m:"Congrats! Approved na ang loan mo na ₱30,000, no collateral. Magbayad lang ng ₱999 insurance fee para ma-release ngayon din. Click: tinyurl.com/loanph-fast"},
+{s:"DSWD",m:"DSWD: Kasama ka sa listahan ng ₱8,000 ayuda (AICS). Mag-register bago mag Oct 31 o ma-forfeit ang benepisyo: https://dswd-ayuda.gov-ph.claim-ph.icu"},
+{s:"09XX XXX 0004",m:"Ma, si Carlo 'to, bagong number ko. Nasira phone ko. Pa-send muna ₱3,000 sa GCash 09XX-XXX-0004 emergency lang, huwag mo muna sabihin kay Papa."},
+{s:"",m:"Join our VIP investment group! Guaranteed 30% daily profit sa USDT. Minimum ₱5,000 lang. Withdraw anytime. Chat sa WhatsApp para sa slot, limited slots!"},
+{s:"",m:"Dear BDO Customer, your online banking access will be suspended. Update your account information immediately to avoid restriction: http://bdo-online-secure.com.ph-update.info/verify"},
+{s:"BANK",m:"(CONTROL / legit-style) 482913 is your one-time PIN for your transaction. Valid for 5 minutes. Never share your OTP with anyone, including bank staff."},
+{s:"",m:"(CONTROL / normal) Hi Migs, kita tayo sa SM Southmall 3pm bukas ha. Dala ka ng payong, uulan daw."}];
+function renderEx(){$("#exlist").innerHTML=EX.map((e,k)=>`<button class="ex" data-k="${k}"><b>EXAMPLE ${k+1}</b>${e.s?` · ${esc(e.s)}`:""}<br>${esc(e.m)}</button>`).join("");
+ document.querySelectorAll(".ex").forEach(b=>b.onclick=()=>{const e=EX[+b.dataset.k];$("#msg").value=e.m;$("#sender").value=e.s;run();$("#result").scrollIntoView({behavior:"smooth"})});}
+function run(){const m=$("#msg").value.trim();if(!m){$("#result").innerHTML=`<p class="ev">${T[L].empty}</p>`;last=null;return}render(analyze(m,$("#sender").value));}
+$("#go").onclick=run;$("#clr").onclick=()=>{$("#msg").value="";$("#sender").value="";$("#result").innerHTML="";last=null};
+document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{L=b.dataset.l;applyLang()});
+applyLang();
+/* dev hooks: #demo=N preloads example N; #selftest prints a table of all examples */
+const h=location.hash;
+if(/^#demo=\d+/.test(h)){const e=EX[+h.split("=")[1]-1];if(e){$("#msg").value=e.m;$("#sender").value=e.s;run();}}
+if(h==="#selftest"){document.body.insertAdjacentHTML("beforeend",`<table id="st"><tr><th>#</th><th>score</th><th>level</th><th>flags</th></tr>${EX.map((e,k)=>{const r=analyze(e.m,e.s);return `<tr><td>${k+1}</td><td>${r.score}</td><td>${r.level}</td><td>${r.hits.map(x=>x.id+"("+x.ev+")").join(", ")}</td></tr>`}).join("")}</table>`);}
+</script>
+</body>
+</html>

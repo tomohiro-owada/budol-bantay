@@ -1,0 +1,4 @@
+# Budol Bantay API — cron lines to ADD (do not touch other entries).
+# Install with:  crontab -l > /tmp/cron.old && cat /tmp/cron.old deploy/crontab.add | crontab -
+@reboot $HOME/budol/ensure.sh
+*/5 * * * * $HOME/budol/ensure.sh

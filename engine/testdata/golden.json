@@ -1,0 +1,249 @@
+[
+  {
+    "id": "poc-01-gcash-lock",
+    "score": 100,
+    "level": "hi",
+    "hits": [
+      "brandlink",
+      "lookalike",
+      "riskytld",
+      "threat",
+      "urgency",
+      "verifyacct"
+    ]
+  },
+  {
+    "id": "poc-02-parcel-hold",
+    "score": 90,
+    "level": "hi",
+    "hits": [
+      "feeToClaim",
+      "parcel",
+      "shortener",
+      "urgency"
+    ]
+  },
+  {
+    "id": "poc-03-job-telegram",
+    "score": 80,
+    "level": "hi",
+    "hits": [
+      "highpay",
+      "job",
+      "offplatform",
+      "task"
+    ]
+  },
+  {
+    "id": "poc-04-prize-fee",
+    "score": 95,
+    "level": "hi",
+    "hits": [
+      "fakePermit",
+      "feeToClaim",
+      "personalAcct",
+      "prize",
+      "sendMoney"
+    ]
+  },
+  {
+    "id": "poc-05-otp-request",
+    "score": 100,
+    "level": "hi",
+    "hits": [
+      "credential",
+      "senderMobile",
+      "urgency",
+      "verifyacct"
+    ]
+  },
+  {
+    "id": "poc-06-loan-fee",
+    "score": 100,
+    "level": "hi",
+    "hits": [
+      "feeToClaim",
+      "loan",
+      "prize",
+      "shortener",
+      "urgency"
+    ]
+  },
+  {
+    "id": "poc-07-ayuda-spoof",
+    "score": 100,
+    "level": "hi",
+    "hits": [
+      "ayuda",
+      "lookalike",
+      "riskytld",
+      "threat",
+      "urgency"
+    ]
+  },
+  {
+    "id": "poc-08-family-emergency",
+    "score": 75,
+    "level": "hi",
+    "hits": [
+      "family",
+      "personalAcct",
+      "secrecy",
+      "sendMoney"
+    ]
+  },
+  {
+    "id": "poc-09-invest-vip",
+    "score": 60,
+    "level": "hi",
+    "hits": [
+      "invest",
+      "offplatform",
+      "urgency"
+    ]
+  },
+  {
+    "id": "poc-10-bdo-spoof",
+    "score": 100,
+    "level": "hi",
+    "hits": [
+      "brandlink",
+      "lookalike",
+      "riskytld",
+      "threat",
+      "urgency",
+      "verifyacct"
+    ]
+  },
+  {
+    "id": "poc-11-otp-notice",
+    "score": 0,
+    "level": "none",
+    "hits": [
+      "otpNotice"
+    ]
+  },
+  {
+    "id": "poc-12-casual-chat",
+    "score": 0,
+    "level": "none",
+    "hits": []
+  },
+  {
+    "id": "extra-01-legit-otp",
+    "score": 0,
+    "level": "none",
+    "hits": [
+      "otpNotice"
+    ]
+  },
+  {
+    "id": "extra-02-courier-nolink",
+    "score": 0,
+    "level": "none",
+    "hits": []
+  },
+  {
+    "id": "extra-03-casual",
+    "score": 0,
+    "level": "none",
+    "hits": []
+  },
+  {
+    "id": "extra-04-legit-promo",
+    "score": 0,
+    "level": "none",
+    "hits": []
+  },
+  {
+    "id": "extra-05-homoglyph",
+    "score": 100,
+    "level": "hi",
+    "hits": [
+      "brandlink",
+      "lookalike",
+      "rawip",
+      "riskytld",
+      "threat"
+    ]
+  },
+  {
+    "id": "extra-06-sim-reg",
+    "score": 80,
+    "level": "hi",
+    "hits": [
+      "lookalike",
+      "riskytld",
+      "threat",
+      "urgency"
+    ]
+  },
+  {
+    "id": "extra-07-meralco",
+    "score": 100,
+    "level": "hi",
+    "hits": [
+      "lookalike",
+      "riskytld",
+      "threat",
+      "urgency",
+      "verifyacct"
+    ]
+  },
+  {
+    "id": "extra-08-task-recharge",
+    "score": 100,
+    "level": "hi",
+    "hits": [
+      "highpay",
+      "job",
+      "offplatform",
+      "sendMoney",
+      "task"
+    ]
+  },
+  {
+    "id": "extra-09-otp-theft",
+    "score": 80,
+    "level": "hi",
+    "hits": [
+      "credential",
+      "threat",
+      "urgency"
+    ]
+  },
+  {
+    "id": "extra-10-loan-yes",
+    "score": 60,
+    "level": "hi",
+    "hits": [
+      "feeToClaim",
+      "loan",
+      "replyYes"
+    ]
+  },
+  {
+    "id": "extra-11-gov-info",
+    "score": 0,
+    "level": "none",
+    "hits": []
+  },
+  {
+    "id": "extra-12-crypto-mid",
+    "score": 45,
+    "level": "mid",
+    "hits": [
+      "invest",
+      "offplatform"
+    ]
+  },
+  {
+    "id": "extra-13-link-lo",
+    "score": 25,
+    "level": "lo",
+    "hits": [
+      "link",
+      "riskytld"
+    ]
+  }
+]

@@ -1,0 +1,690 @@
+{
+  "shorteners": [
+    "bit.ly",
+    "tinyurl.com",
+    "cutt.ly",
+    "is.gd",
+    "t.ly",
+    "rb.gy",
+    "s.id",
+    "shorturl.at",
+    "tiny.cc",
+    "ow.ly",
+    "rebrand.ly",
+    "goo.su",
+    "t.co",
+    "buff.ly",
+    "shorturl.asia",
+    "v.gd",
+    "qr.ae",
+    "u.to",
+    "clck.ru",
+    "bitly.ws",
+    "lnkd.in",
+    "tinyurl.ph"
+  ],
+  "riskyTlds": [
+    "top",
+    "xyz",
+    "icu",
+    "vip",
+    "cc",
+    "buzz",
+    "shop",
+    "live",
+    "click",
+    "info",
+    "online",
+    "site",
+    "club",
+    "cyou",
+    "sbs",
+    "cfd",
+    "rest",
+    "monster",
+    "lol",
+    "mom",
+    "quest",
+    "bond",
+    "win",
+    "work",
+    "support",
+    "help",
+    "app"
+  ],
+  "allowedTlds": [
+    "com",
+    "net",
+    "org",
+    "ph",
+    "gov",
+    "info",
+    "xyz",
+    "top",
+    "icu",
+    "vip",
+    "cc",
+    "buzz",
+    "shop",
+    "live",
+    "click",
+    "online",
+    "site",
+    "club",
+    "ly",
+    "gd",
+    "id",
+    "io",
+    "co",
+    "me",
+    "app",
+    "link",
+    "to",
+    "in",
+    "at",
+    "ws",
+    "ru",
+    "asia",
+    "cyou",
+    "sbs",
+    "cfd",
+    "rest",
+    "monster",
+    "lol",
+    "mom",
+    "quest",
+    "bond",
+    "win",
+    "work",
+    "support",
+    "help",
+    "us",
+    "uk",
+    "sg",
+    "my",
+    "cn",
+    "de"
+  ],
+  "official": {
+    "gcash": [
+      "gcash.com"
+    ],
+    "maya": [
+      "maya.ph",
+      "paymaya.com"
+    ],
+    "bdo": [
+      "bdo.com.ph"
+    ],
+    "bpi": [
+      "bpi.com.ph"
+    ],
+    "landbank": [
+      "landbank.com"
+    ],
+    "metrobank": [
+      "metrobank.com.ph"
+    ],
+    "unionbank": [
+      "unionbankph.com"
+    ],
+    "securitybank": [
+      "securitybank.com"
+    ],
+    "pnb": [
+      "pnb.com.ph"
+    ],
+    "rcbc": [
+      "rcbc.com"
+    ],
+    "chinabank": [
+      "chinabank.ph"
+    ],
+    "gotyme": [
+      "gotyme.com.ph"
+    ],
+    "sss": [
+      "sss.gov.ph"
+    ],
+    "dswd": [
+      "dswd.gov.ph"
+    ],
+    "philhealth": [
+      "philhealth.gov.ph"
+    ],
+    "pagibig": [
+      "pagibigfund.gov.ph"
+    ],
+    "bir": [
+      "bir.gov.ph"
+    ],
+    "lto": [
+      "lto.gov.ph"
+    ],
+    "lbc": [
+      "lbcexpress.com"
+    ],
+    "jnt": [
+      "jtexpress.ph"
+    ],
+    "jtexpress": [
+      "jtexpress.ph"
+    ],
+    "phlpost": [
+      "phlpost.gov.ph"
+    ],
+    "shopee": [
+      "shopee.ph"
+    ],
+    "lazada": [
+      "lazada.com.ph"
+    ],
+    "cicc": [
+      "cicc.gov.ph"
+    ],
+    "ntc": [
+      "ntc.gov.ph"
+    ],
+    "bsp": [
+      "bsp.gov.ph"
+    ],
+    "meralco": [
+      "meralco.com.ph"
+    ],
+    "globe": [
+      "globe.com.ph"
+    ],
+    "smart": [
+      "smart.com.ph"
+    ]
+  },
+  "rules": [
+    {
+      "id": "shortener",
+      "w": 25,
+      "cat": "link",
+      "tl": "May shortened link (hal. bit.ly). Tinatago nito kung saan ka talaga dadalhin.",
+      "en": "Contains a shortened link (e.g. bit.ly) that hides the real destination.",
+      "ja": "\u77ed\u7e2eURL(bit.ly\u7b49)\u304c\u3042\u308a\u3001\u672c\u5f53\u306e\u884c\u304d\u5148\u304c\u96a0\u3055\u308c\u3066\u3044\u307e\u3059\u3002",
+      "kind": "shortener"
+    },
+    {
+      "id": "lookalike",
+      "w": 35,
+      "cat": "link",
+      "tl": "Ang link ay nagpapanggap na brand/gobyerno pero HINDI official domain.",
+      "en": "The link imitates a brand/government name but is NOT the official domain.",
+      "ja": "\u30d6\u30e9\u30f3\u30c9\u3084\u653f\u5e9c\u3092\u88c5\u3063\u305f\u30ea\u30f3\u30af\u3067\u3059\u304c\u3001\u516c\u5f0f\u30c9\u30e1\u30a4\u30f3\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002",
+      "kind": "lookalike"
+    },
+    {
+      "id": "riskytld",
+      "w": 15,
+      "cat": "link",
+      "tl": "Ang link ay gumagamit ng domain ending na madalas gamitin sa scam (.top, .xyz, .icu\u2026).",
+      "en": "The link uses a domain ending often abused by scammers (.top, .xyz, .icu\u2026).",
+      "ja": "\u8a50\u6b3a\u3067\u3088\u304f\u4f7f\u308f\u308c\u308b\u30c9\u30e1\u30a4\u30f3(.top/.xyz/.icu\u7b49)\u3067\u3059\u3002",
+      "kind": "riskytld"
+    },
+    {
+      "id": "rawip",
+      "w": 25,
+      "cat": "link",
+      "tl": "Kakaibang link (IP address o punycode).",
+      "en": "Unusual link (raw IP address or punycode look-alike).",
+      "ja": "\u4e0d\u81ea\u7136\u306a\u30ea\u30f3\u30af(IP\u30a2\u30c9\u30ec\u30b9\u3084punycode)\u3067\u3059\u3002",
+      "kind": "rawip"
+    },
+    {
+      "id": "brandlink",
+      "w": 20,
+      "cat": "link",
+      "tl": "Nagbanggit ng bangko/e-wallet AT may link. Ang GCash, Maya at mga bangko ay hindi nagpapadala ng link para mag-login (AFASA).",
+      "en": "Mentions a bank/e-wallet AND includes a link. GCash, Maya and banks don't send login links by SMS (AFASA rules).",
+      "ja": "\u9280\u884c/\u96fb\u5b50\u30a6\u30a9\u30ec\u30c3\u30c8\u540d\u3068\u30ea\u30f3\u30af\u304c\u540c\u6642\u306b\u3042\u308a\u307e\u3059\u3002GCash\u3084Maya\u3001\u9280\u884c\u306fSMS\u3067\u30ed\u30b0\u30a4\u30f3\u7528\u30ea\u30f3\u30af\u3092\u9001\u308a\u307e\u305b\u3093(AFASA)\u3002",
+      "kind": "brandlink"
+    },
+    {
+      "id": "link",
+      "w": 10,
+      "cat": "link",
+      "tl": "May link sa mensahe. Huwag i-click kung hindi ka sigurado.",
+      "en": "The message contains a link. Don't tap it unless you're sure.",
+      "ja": "\u30ea\u30f3\u30af\u304c\u542b\u307e\u308c\u3066\u3044\u307e\u3059\u3002\u78ba\u4fe1\u304c\u306a\u3051\u308c\u3070\u958b\u304b\u306a\u3044\u3067\u304f\u3060\u3055\u3044\u3002",
+      "kind": "link"
+    },
+    {
+      "id": "credential",
+      "w": 40,
+      "cat": "cred",
+      "tl": "Humihingi ng OTP / MPIN / password / code. Walang lehitimong kumpanya ang hihingi nito.",
+      "en": "Asks for your OTP / MPIN / password / code. No legitimate company asks for these.",
+      "ja": "OTP\u30fbMPIN\u30fb\u30d1\u30b9\u30ef\u30fc\u30c9\u7b49\u3092\u6c42\u3081\u3066\u3044\u307e\u3059\u3002\u6b63\u898f\u306e\u4f01\u696d\u306f\u7d76\u5bfe\u306b\u6c42\u3081\u307e\u305b\u3093\u3002",
+      "kind": "credential"
+    },
+    {
+      "id": "verifyacct",
+      "w": 15,
+      "cat": "cred",
+      "tl": "Pinapa-verify o pinapa-update ang account mo.",
+      "en": "Asks you to verify/update your account details.",
+      "ja": "\u30a2\u30ab\u30a6\u30f3\u30c8\u306e\u78ba\u8a8d\u30fb\u66f4\u65b0\u3092\u6c42\u3081\u3066\u3044\u307e\u3059\u3002",
+      "kind": "regex",
+      "pattern": "\\b(i-?verify|verify|i-?update|update|confirm|i-?confirm|re-?activate|i-?activate|unlock|login|log in|mag-?login)\\b[^.!?\\n]{0,40}\\b(account|info|information|details|kyc|identity|card|wallet)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "threat",
+      "w": 15,
+      "cat": "cred",
+      "tl": "Nananakot na ila-lock, isa-suspend o ma-forfeit ang account/benepisyo.",
+      "en": "Threatens that your account/benefit will be locked, suspended or forfeited.",
+      "ja": "\u30a2\u30ab\u30a6\u30f3\u30c8\u505c\u6b62\u30fb\u5931\u52b9\u306a\u3069\u3067\u8105\u3057\u3066\u3044\u307e\u3059\u3002",
+      "kind": "regex",
+      "pattern": "\\b(suspend(ed)?|deactivat\\w*|ma-?deactivate|na-?lock|ma-?lock|locked|blocked|ma-?block|restrict\\w*|na-?hold|frozen|i-?freeze|closed|terminated|ma-?forfeit|forfeit\\w*)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "urgency",
+      "w": 15,
+      "cat": "gen",
+      "tl": "Minamadali ka (hal. 'within 24 hours', 'ngayon din').",
+      "en": "Pressures you to act fast (e.g. 'within 24 hours').",
+      "ja": "\u6025\u304c\u305b\u3066\u3044\u307e\u3059(\u300c24\u6642\u9593\u4ee5\u5185\u300d\u306a\u3069)\u3002",
+      "kind": "regex",
+      "pattern": "\\b(within \\d+ ?(hours?|hrs?|minutes?|mins?|oras|araw)|\\d+ ?(hrs?|oras)|ngayon din|ngayong araw|agad|agad-agad|asap|urgent|immediately|final (notice|warning)|huling paalala|last chance|today only|expire[sd]?|mag-?e-?expire|bago mag|before (midnight|\\w+ \\d+)|limited slots?)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "prize",
+      "w": 25,
+      "cat": "prize",
+      "tl": "Sinasabing nanalo ka o napili ka sa raffle/promo.",
+      "en": "Claims you won or were selected for a prize/raffle.",
+      "ja": "\u5f53\u9078\u30fb\u9078\u3070\u308c\u305f\u3068\u8a00\u3063\u3066\u3044\u307e\u3059\u3002",
+      "kind": "regex",
+      "pattern": "\\b(congratulations|congrats|nanalo|panalo|you (have )?won|winner|raffle|napili ka|selected|lucky|claim (your|ang) (prize|premyo|reward)|premyo|grand prize|jackpot)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "feeToClaim",
+      "w": 25,
+      "cat": "pay",
+      "tl": "Pinapabayad ka muna ng 'fee' para makuha ang premyo/loan/trabaho/parcel.",
+      "en": "Asks you to pay a 'fee' first to get a prize/loan/job/parcel.",
+      "ja": "\u8cde\u54c1\u30fb\u30ed\u30fc\u30f3\u30fb\u4ed5\u4e8b\u30fb\u8377\u7269\u306e\u305f\u3081\u306b\u5148\u306b\u300c\u624b\u6570\u6599\u300d\u3092\u6c42\u3081\u3066\u3044\u307e\u3059\u3002",
+      "kind": "feeToClaim",
+      "pattern": "\\b(processing|handling|redelivery|delivery|release|insurance|clearance|membership|registration|activation|verification|tax|shipping|service|customs) fee\\b|\\bfee\\b|\\bbayad\\b|magbayad|bayaran",
+      "flags": "i",
+      "evPattern": "\\b\\w+ fee\\b|magbayad|bayad",
+      "evFlags": "i"
+    },
+    {
+      "id": "sendMoney",
+      "w": 20,
+      "cat": "pay",
+      "tl": "Humihingi ng pera o load.",
+      "en": "Asks you to send money or load.",
+      "ja": "\u9001\u91d1\u30fb\u30ed\u30fc\u30c9\u3092\u6c42\u3081\u3066\u3044\u307e\u3059\u3002",
+      "kind": "regex",
+      "pattern": "\\b(pa-?send|magpadala|ipadala|i-?send|send|transfer|deposit|i-?deposit|pa-?load|load|cash ?in|top ?up|recharge|bayaran)\\b[^.!?\\n]{0,50}(\u20b1|php|p\\s?\\d|\\d{3,}|gcash|maya|account|0?9\\d{2}|\\[PHONE\\])",
+      "flags": "i"
+    },
+    {
+      "id": "personalAcct",
+      "w": 15,
+      "cat": "pay",
+      "tl": "Pinapadala sa personal na GCash/Maya number, hindi sa official na account.",
+      "en": "Payment goes to a personal GCash/Maya number, not an official account.",
+      "ja": "\u516c\u5f0f\u3067\u306a\u3044\u500b\u4eba\u306eGCash/Maya\u756a\u53f7\u3078\u306e\u652f\u6255\u3044\u3067\u3059\u3002",
+      "kind": "regex",
+      "pattern": "\\b(gcash|maya)\\b[^.!?\\n]{0,15}((0|\\+63)9[0-9xX]{2}[\\s-]?[0-9xX]{3}[\\s-]?[0-9xX]{4}|\\[PHONE\\])",
+      "flags": "i"
+    },
+    {
+      "id": "job",
+      "w": 20,
+      "cat": "job",
+      "tl": "Alok na trabaho na madali/online/walang experience.",
+      "en": "Unsolicited easy/online/no-experience job offer.",
+      "ja": "\u7c21\u5358\u30fb\u5728\u5b85\u30fb\u672a\u7d4c\u9a13OK\u306e\u52e7\u8a98\u3067\u3059\u3002",
+      "kind": "regex",
+      "pattern": "\\b(hiring|part-?time|work from home|wfh|online job|home-?based|no experience|walang experience|daily (pay|salary)|commission|kumita|earn)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "highpay",
+      "w": 15,
+      "cat": "job",
+      "tl": "Sobrang laking sweldo kada araw para sa simpleng trabaho.",
+      "en": "Unrealistically high daily pay for simple work.",
+      "ja": "\u7c21\u5358\u306a\u4f5c\u696d\u306b\u5bfe\u3057\u3066\u9ad8\u3059\u304e\u308b\u65e5\u7d66\u3067\u3059\u3002",
+      "kind": "regex",
+      "pattern": "(\u20b1|php|p)\\s?[\\d,]{3,}\\s?(-|\u2013|to)?\\s?(\u20b1|php|p)?\\s?[\\d,]*\\s?\\/?\\s?(per )?(day|araw|daily|hour|oras|isang araw)",
+      "flags": "i"
+    },
+    {
+      "id": "task",
+      "w": 30,
+      "cat": "job",
+      "tl": "Mukhang 'task scam': mag-like/review tapos pagdedepositohin ka.",
+      "en": "Looks like a 'task scam': like/review tasks that later require deposits.",
+      "ja": "\u300c\u30bf\u30b9\u30af\u8a50\u6b3a\u300d\u578b:\u3044\u3044\u306d\u30fb\u30ec\u30d3\u30e5\u30fc\u4f5c\u696d\u5f8c\u306b\u5165\u91d1\u3092\u8981\u6c42\u3055\u308c\u308b\u624b\u53e3\u3067\u3059\u3002",
+      "kind": "regex",
+      "pattern": "\\b(like|follow|rate|review|subscribe|mag-?like|mag-?review)\\b[^.!?\\n]{0,40}\\b(product|video|page|task|order|hotel|app)s?\\b|\\btask\\b[^.!?\\n]{0,40}\\b(recharge|deposit|unlock|top ?up)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "offplatform",
+      "w": 15,
+      "cat": "gen",
+      "tl": "Pinapalipat ka sa Telegram/WhatsApp o ibang app.",
+      "en": "Moves you to Telegram/WhatsApp or another app.",
+      "ja": "Telegram/WhatsApp\u7b49\u3078\u8a98\u5c0e\u3057\u3066\u3044\u307e\u3059\u3002",
+      "kind": "regex",
+      "pattern": "\\b(telegram|whatsapp|wechat|signal app|sa signal|line app)\\b|@[a-z0-9_]{4,}\\b",
+      "flags": "i"
+    },
+    {
+      "id": "parcel",
+      "w": 25,
+      "cat": "parcel",
+      "tl": "'Parcel on hold' na modus \u2014 kunwaring may problema sa padala mo.",
+      "en": "'Parcel on hold' pattern \u2014 fake delivery problem.",
+      "ja": "\u300c\u8377\u7269\u4fdd\u7559\u300d\u578b\u306e\u624b\u53e3\u3067\u3059\u3002",
+      "kind": "parcel",
+      "pattern": "\\b(on hold|naka-?hold|na-?hold|failed (delivery|attempt)|hindi (ma-?deliver|na-?deliver)|incomplete address|kulang (ang )?address|wrong address|unpaid|customs|redelivery|ibalik)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "loan",
+      "w": 25,
+      "cat": "loan",
+      "tl": "Alok na loan na 'approved na' kahit hindi ka nag-apply.",
+      "en": "Loan offer 'already approved' that you didn't apply for.",
+      "ja": "\u7533\u3057\u8fbc\u3093\u3067\u3044\u306a\u3044\u306e\u306b\u300c\u627f\u8a8d\u6e08\u307f\u300d\u306e\u30ed\u30fc\u30f3\u52e7\u8a98\u3067\u3059\u3002",
+      "kind": "regex",
+      "pattern": "\\b(loan|utang|pautang|cash advance|instant cash|pre-?approved|approved na|no collateral|walang collateral|low interest)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "ayuda",
+      "w": 20,
+      "cat": "gov",
+      "tl": "Nagbabanggit ng ahensya ng gobyerno/ayuda at pinapa-claim o pinapa-register ka.",
+      "en": "Uses a government agency/ayuda name and asks you to claim or register.",
+      "ja": "\u653f\u5e9c\u6a5f\u95a2\u30fb\u7d66\u4ed8\u91d1\u306e\u540d\u524d\u3067\u53d7\u53d6\u30fb\u767b\u9332\u3092\u4fc3\u3057\u3066\u3044\u307e\u3059\u3002",
+      "kind": "ayuda",
+      "pattern": "\\b(ayuda|cash assistance|financial assistance|subsidy|benefit|claim|i-?claim|register|mag-?register|listahan|qualified|beneficiar\\w*|payout)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "invest",
+      "w": 30,
+      "cat": "invest",
+      "tl": "'Guaranteed' na kita, crypto o investment na sobrang taas ng tubo.",
+      "en": "'Guaranteed' returns, crypto, or too-good-to-be-true investment.",
+      "ja": "\u300c\u4fdd\u8a3c\u4ed8\u304d\u300d\u9ad8\u5229\u56de\u308a\u30fb\u6697\u53f7\u8cc7\u7523\u306e\u6295\u8cc7\u52e7\u8a98\u3067\u3059\u3002",
+      "kind": "regex",
+      "pattern": "\\b(guaranteed|garantisado|double your|doble|daily profit|\\d+% (daily|weekly|per day|kada araw)|passive income|usdt|bitcoin|crypto|forex|trading|investment|invest|paluwagan|vip group)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "family",
+      "w": 25,
+      "cat": "family",
+      "tl": "Nagpapanggap na kapamilya na may bagong number/emergency.",
+      "en": "Pretends to be a family member with a new number/emergency.",
+      "ja": "\u65b0\u3057\u3044\u756a\u53f7\u30fb\u7dca\u6025\u4e8b\u614b\u3092\u88c5\u3063\u305f\u5bb6\u65cf\u306a\u308a\u3059\u307e\u3057\u3067\u3059\u3002",
+      "kind": "regex",
+      "pattern": "\\b(bagong number ko|new number ko|new number|nasira (ang )?phone|nawala (ang )?(phone|cellphone)|this is your (son|daughter)|si [A-Z][a-z]+ (ito|'to)|emergency lang|na-?ospital|naaksidente|nahuli ng pulis)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "secrecy",
+      "w": 15,
+      "cat": "gen",
+      "tl": "Pinapalihim sa iba. Taktika ito para walang makapigil sa iyo.",
+      "en": "Asks you to keep it secret \u2014 so no one can stop you.",
+      "ja": "\u79d8\u5bc6\u306b\u3059\u308b\u3088\u3046\u6c42\u3081\u3066\u3044\u307e\u3059(\u6b62\u3081\u3089\u308c\u306a\u3044\u3088\u3046\u306b\u3059\u308b\u624b\u53e3)\u3002",
+      "kind": "regex",
+      "pattern": "\\b(huwag (mo )?(munang |muna )?(sabihin|ipaalam)|wag (mo )?(muna )?sabihin|keep (this )?(confidential|secret)|don'?t tell|atin-atin lang)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "remote",
+      "w": 30,
+      "cat": "cred",
+      "tl": "Pinapa-install ng app/APK o remote-access app (AnyDesk, atbp).",
+      "en": "Asks you to install an app/APK or remote-access tool (AnyDesk etc).",
+      "ja": "\u30a2\u30d7\u30ea/APK\u3084\u9060\u9694\u64cd\u4f5c\u30a2\u30d7\u30ea(AnyDesk\u7b49)\u306e\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb\u3092\u6c42\u3081\u3066\u3044\u307e\u3059\u3002",
+      "kind": "regex",
+      "pattern": "\\b(anydesk|teamviewer|rustdesk|quicksupport|\\.apk|i-?download ang app|download (this|the) app|install (this|the) app)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "qr",
+      "w": 10,
+      "cat": "link",
+      "tl": "Pinapa-scan ng QR code.",
+      "en": "Asks you to scan a QR code.",
+      "ja": "QR\u30b3\u30fc\u30c9\u306e\u8aad\u307f\u53d6\u308a\u3092\u6c42\u3081\u3066\u3044\u307e\u3059\u3002",
+      "kind": "regex",
+      "pattern": "\\b(scan (the |this )?qr|i-?scan ang qr|qr code)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "replyYes",
+      "w": 10,
+      "cat": "gen",
+      "tl": "Pinapa-reply ng 'YES' \u2014 para malaman na active ang number mo.",
+      "en": "Asks you to reply 'YES' \u2014 confirms your number is active.",
+      "ja": "\u300cYES\u300d\u3068\u8fd4\u4fe1\u3055\u305b\u308b\u624b\u53e3(\u756a\u53f7\u306e\u6709\u52b9\u78ba\u8a8d)\u3002",
+      "kind": "regex",
+      "pattern": "\\b(reply|i-?reply|text back)\\s+(yes|oo|interested|1|ok)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "senderMobile",
+      "w": 20,
+      "cat": "gen",
+      "tl": "Nagpapanggap na kumpanya/ahensya pero galing sa ordinaryong 09xx number.",
+      "en": "Claims to be a company/agency but came from a regular 09xx number.",
+      "ja": "\u4f01\u696d\u30fb\u6a5f\u95a2\u3092\u540d\u4e57\u308b\u306e\u306b\u901a\u5e38\u306e09xx\u643a\u5e2f\u756a\u53f7\u304b\u3089\u5c4a\u3044\u3066\u3044\u307e\u3059\u3002",
+      "kind": "senderMobile"
+    },
+    {
+      "id": "fakePermit",
+      "w": 10,
+      "cat": "prize",
+      "tl": "Naglagay ng 'DTI permit' para magmukhang totoo \u2014 madaling pekein ito.",
+      "en": "Cites a 'DTI permit' to look legit \u2014 easily faked.",
+      "ja": "\u300cDTI\u8a31\u53ef\u756a\u53f7\u300d\u3067\u672c\u7269\u3089\u3057\u304f\u898b\u305b\u3066\u3044\u307e\u3059(\u7c21\u5358\u306b\u507d\u9020\u53ef\u80fd)\u3002",
+      "kind": "regex",
+      "pattern": "\\b(dti (permit|fair trade permit)|per dti|dti-?fto)\\b",
+      "flags": "i"
+    },
+    {
+      "id": "otpNotice",
+      "w": -25,
+      "cat": "gen",
+      "tl": "Mukhang karaniwang OTP notice na nagsasabing 'huwag ibigay' (binawasan ang score).",
+      "en": "Looks like a standard OTP notice saying 'never share' (score reduced).",
+      "ja": "\u300c\u5171\u6709\u3057\u306a\u3044\u3067\u300d\u3068\u3044\u3046\u901a\u5e38\u306eOTP\u901a\u77e5\u306b\u898b\u3048\u307e\u3059(\u30b9\u30b3\u30a2\u6e1b\u7b97)\u3002",
+      "kind": "otpNotice",
+      "pattern": "\\b(never|do not|don'?t|huwag|wag) (ever )?(share|ibigay|sabihin|i-?share)\\b[^.!?\\n]{0,30}\\b(otp|pin|code|password)\\b",
+      "flags": "i"
+    }
+  ],
+  "advice": {
+    "always": {
+      "tl": "Huwag i-click ang link at huwag mag-reply. I-verify gamit ang official app o hotline na ikaw mismo ang naghanap.",
+      "en": "Don't tap links or reply. Verify using the official app or a hotline you look up yourself.",
+      "ja": "\u30ea\u30f3\u30af\u3092\u958b\u304b\u305a\u8fd4\u4fe1\u3082\u3057\u306a\u3044\u3067\u304f\u3060\u3055\u3044\u3002\u81ea\u5206\u3067\u8abf\u3079\u305f\u516c\u5f0f\u30a2\u30d7\u30ea\u30fb\u7a93\u53e3\u3067\u78ba\u8a8d\u3092\u3002"
+    },
+    "cred": {
+      "tl": "Kung naibigay mo na ang OTP/MPIN: tawagan agad ang bangko/e-wallet gamit ang official hotline sa app nila at ipa-lock ang account.",
+      "en": "If you already shared an OTP/MPIN: immediately contact your bank/e-wallet via the official hotline in their app and lock the account.",
+      "ja": "OTP/MPIN\u3092\u6559\u3048\u3066\u3057\u307e\u3063\u305f\u5834\u5408:\u3059\u3050\u516c\u5f0f\u30a2\u30d7\u30ea\u5185\u306e\u7a93\u53e3\u3067\u9280\u884c/\u30a6\u30a9\u30ec\u30c3\u30c8\u306b\u9023\u7d61\u3057\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u51cd\u7d50\u3002"
+    },
+    "pay": {
+      "tl": "Huwag magpadala ng pera. Kung nakapagpadala na, i-report agad sa GCash/Maya/bangko (in-app Help) at itago ang reference number.",
+      "en": "Don't send money. If you already did, report it in the GCash/Maya/bank app Help right away and keep the reference number.",
+      "ja": "\u9001\u91d1\u3057\u306a\u3044\u3067\u304f\u3060\u3055\u3044\u3002\u9001\u91d1\u6e08\u307f\u306a\u3089\u76f4\u3061\u306bGCash/Maya/\u9280\u884c\u30a2\u30d7\u30ea\u306e\u30d8\u30eb\u30d7\u3067\u5831\u544a\u3057\u3001\u53c2\u7167\u756a\u53f7\u3092\u4fdd\u7ba1\u3002"
+    },
+    "job": {
+      "tl": "Ang tunay na trabaho ay hindi ka pagbabayarin para kumita. 'Never pay to get paid.'",
+      "en": "Real jobs never make you pay to earn. Never pay to get paid.",
+      "ja": "\u672c\u7269\u306e\u4ed5\u4e8b\u3067\u304a\u91d1\u3092\u6255\u308f\u3055\u308c\u308b\u3053\u3068\u306f\u3042\u308a\u307e\u305b\u3093\u3002"
+    },
+    "parcel": {
+      "tl": "I-check ang tracking sa official app/website ng courier (hal. LBC, J&T) \u2014 hindi sa link sa text.",
+      "en": "Check tracking only in the courier's official app/website (e.g. LBC, J&T) \u2014 not via the text's link.",
+      "ja": "\u8ffd\u8de1\u306f\u914d\u9001\u4f1a\u793e(LBC\u3001J&T\u7b49)\u306e\u516c\u5f0f\u30a2\u30d7\u30ea/\u30b5\u30a4\u30c8\u3067\u3002SMS\u306e\u30ea\u30f3\u30af\u306f\u4f7f\u308f\u306a\u3044\u3002"
+    },
+    "gov": {
+      "tl": "Ang ayuda ay inaanunsyo sa official na page ng ahensya. Walang bayad ang pag-claim.",
+      "en": "Government aid is announced on the agency's official page. Claiming never costs a fee.",
+      "ja": "\u7d66\u4ed8\u306f\u6a5f\u95a2\u306e\u516c\u5f0f\u30da\u30fc\u30b8\u3067\u544a\u77e5\u3055\u308c\u307e\u3059\u3002\u53d7\u53d6\u306b\u624b\u6570\u6599\u306f\u304b\u304b\u308a\u307e\u305b\u3093\u3002"
+    },
+    "invest": {
+      "tl": "I-check sa SEC kung rehistrado at may lisensya ang investment. 'Guaranteed' na tubo = red flag.",
+      "en": "Check with the SEC whether the investment is registered and licensed. 'Guaranteed' returns = red flag.",
+      "ja": "SEC\u3067\u767b\u9332\u30fb\u8a31\u53ef\u3092\u78ba\u8a8d\u3002\u300c\u5229\u56de\u308a\u4fdd\u8a3c\u300d\u306f\u5371\u967a\u4fe1\u53f7\u3002"
+    },
+    "family": {
+      "tl": "Tawagan ang kapamilya sa LUMANG number niya o magtanong ng bagay na kayo lang ang nakakaalam.",
+      "en": "Call the family member on their OLD number or ask something only they would know.",
+      "ja": "\u5bb6\u65cf\u306e\u300c\u4ee5\u524d\u306e\u756a\u53f7\u300d\u306b\u96fb\u8a71\u3059\u308b\u304b\u3001\u672c\u4eba\u3057\u304b\u77e5\u3089\u306a\u3044\u8cea\u554f\u3092\u3002"
+    },
+    "loan": {
+      "tl": "Mag-loan lang sa SEC-registered na lending company. Walang bayad bago ma-release ang loan.",
+      "en": "Only borrow from SEC-registered lenders. No fee should be paid before release.",
+      "ja": "SEC\u767b\u9332\u306e\u8cb8\u91d1\u696d\u8005\u306e\u307f\u5229\u7528\u3002\u878d\u8cc7\u524d\u306e\u624b\u6570\u6599\u306f\u4e0d\u8981\u3002"
+    },
+    "report": {
+      "tl": "I-report: CICC Hotline 1326 (24/7) \u2022 report@cicc.gov.ph \u2022 eGovPH app \u2192 Report. I-forward/i-block ang number.",
+      "en": "Report: CICC Hotline 1326 (24/7) \u2022 report@cicc.gov.ph \u2022 eGovPH app \u2192 Report. Block the number.",
+      "ja": "\u901a\u5831:CICC\u30db\u30c3\u30c8\u30e9\u30a4\u30f31326(24\u6642\u9593)\u2022 report@cicc.gov.ph \u2022 eGovPH\u30a2\u30d7\u30ea\u2192Report\u3002\u756a\u53f7\u306f\u30d6\u30ed\u30c3\u30af\u3002"
+    }
+  },
+  "patterns": {
+    "url": {
+      "src": "\\b((?:https?://)?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+(?:[a-z]{2,24}|xn--[a-z0-9-]+)(?::\\d+)?(?:/[^\\s<>\"']*)?)|\\bhttps?://\\d{1,3}(?:\\.\\d{1,3}){3}[^\\s]*",
+      "flags": "i"
+    },
+    "notUrl": {
+      "src": "^(e\\.g|i\\.e|p\\.s|a\\.m|p\\.m|etc|mr|ms|dr|st)\\b",
+      "flags": "i"
+    },
+    "twoLevel": {
+      "src": "\\.(com|gov|org|net|edu|mil)\\.ph$",
+      "flags": "i"
+    },
+    "brandEwallet": {
+      "src": "\\b(g-?cash|gcash|maya|paymaya|shopeepay|gotyme|coins\\.ph|grabpay)\\b",
+      "flags": "i"
+    },
+    "brandBank": {
+      "src": "\\b(bdo|bpi|landbank|metrobank|unionbank|security ?bank|pnb|rcbc|china ?bank|eastwest|psbank|bank|banko)\\b",
+      "flags": "i"
+    },
+    "brandGov": {
+      "src": "\\b(dswd|sss|philhealth|pag-?ibig|bir|lto|dfa|dole|owwa|4ps|aics|ayuda|tupad|nbi|pnp|gsis|comelec|lgu|barangay)\\b",
+      "flags": "i"
+    },
+    "brandCourier": {
+      "src": "\\b(lbc|j&t|j ?& ?t|jnt|jt express|ninja ?van|flash express|phlpost|philpost|2go|grab ?express|lalamove|dhl|fedex|ups|parcel|package|padala|shipment|courier)\\b",
+      "flags": "i"
+    },
+    "hasPrize": {
+      "src": "\\b(nanalo|panalo|won|winner|raffle|prize|premyo|congratulations)\\b",
+      "flags": "i"
+    },
+    "hasLoan": {
+      "src": "\\b(loan|utang|pautang)\\b",
+      "flags": "i"
+    },
+    "hasJob": {
+      "src": "\\b(hiring|job|trabaho|part-?time|task)\\b",
+      "flags": "i"
+    },
+    "credA": {
+      "src": "\\b(paki-?send|paki-?reply|paki-?type|i-?send|send|ibigay|bigay|i-?reply|reply|i-?type|ilagay|enter|provide|share|sabihin|i-?forward|forward)\\b[^.!?\\[\\n]{0,40}(\\b(otp|one[- ]time pin|mpin|pin|password|passcode|cvv|card number|verification code|code)\\b|\\[CODE\\])",
+      "flags": "i"
+    },
+    "credB": {
+      "src": "(\\b(otp|mpin|cvv|password|verification code)\\b|\\[CODE\\])[^.!?\\n]{0,30}\\b(paki-?send|paki-?reply|paki-?type|i-?send|ibigay|i-?reply|reply|send|ilagay|enter)\\b",
+      "flags": "i"
+    },
+    "neg": {
+      "src": "\\b(never|do not|don't|dont|huwag|wag|hindi)\\b[^.!?\\n]*$",
+      "flags": "i"
+    },
+    "neg2": {
+      "src": "\\b(never|do not|don't|dont|huwag|wag)\\s*(ever\\s*)?$",
+      "flags": "i"
+    },
+    "start": {
+      "src": "^(share|sabihin)\\b",
+      "flags": "i"
+    },
+    "govPh": {
+      "src": "gov-?ph|govph",
+      "flags": "i"
+    },
+    "nonAlnum": {
+      "src": "[^a-z0-9]",
+      "flags": "i"
+    },
+    "rawIp": {
+      "src": "^\\d{1,3}(\\.\\d{1,3}){3}$",
+      "flags": ""
+    },
+    "senderMobile": {
+      "src": "^((\\+?63|0)9[0-9xX]{9}|\\[PHONE\\])$",
+      "flags": "i"
+    },
+    "stripZw": {
+      "src": "[\u200b\u200c\u200d\ufeff]",
+      "flags": ""
+    }
+  },
+  "combos": [
+    {
+      "ifAll": [
+        "credential"
+      ],
+      "ifAny": [
+        "threat",
+        "urgency"
+      ],
+      "add": 10
+    },
+    {
+      "ifAll": [
+        "lookalike",
+        "verifyacct"
+      ],
+      "add": 10
+    }
+  ],
+  "levels": {
+    "hi": 60,
+    "mid": 30,
+    "lo": 10
+  },
+  "linkDropStrong": [
+    "shortener",
+    "lookalike",
+    "rawip"
+  ],
+  "otpMitigator": {
+    "suppressIf": [
+      "credential",
+      "sendMoney",
+      "remote"
+    ],
+    "requiresNoUrls": true
+  }
+}

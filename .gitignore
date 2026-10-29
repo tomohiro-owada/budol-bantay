@@ -1,0 +1,34 @@
+# build output
+dist/
+dist-bin/
+*.test
+*.exe
+/budol-api
+/aibench
+
+# secrets and machine-specific files: NEVER commit
+.env
+.env.*
+!.env.example
+env
+env.local
+*.env
+!*.env.example
+ai.env
+.dev.vars
+*.pem
+*.key
+credentials*.json
+.cloudflared/
+
+# local state, logs, scratch
+state/
+logs/
+*.log
+private/
+node_modules/
+.wrangler/
+eval/results/
+
+# generated screenshots
+poc/*.png
